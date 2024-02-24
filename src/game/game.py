@@ -16,12 +16,11 @@ class Game:
         self.setup = Setup()
         self.running = True
         self.screen = self.setup.screen
-        self.spaceship = Spaceship()
+        self.spaceship = Spaceship(self.screen)
         
     def run_game(self):
         clock = pygame.time.Clock()
         
-
         while self.running:
             for event in pygame.event.get():
                 if event.type == QUIT:
@@ -29,13 +28,12 @@ class Game:
 
             keys = pygame.key.get_pressed()
 
-            self.spaceship.position.x += (keys[K_RIGHT] -
-                                           keys[K_LEFT]) * self.spaceship.speed
+            self.spaceship.position.x += (keys[K_RIGHT] - keys[K_LEFT]) * self.spaceship.speed
             
-            self.spaceship.position.y += (keys[K_DOWN] -
-                                          keys[K_UP]) * self.spaceship.speed
+            self.spaceship.position.y += (keys[K_DOWN] - keys[K_UP]) * self.spaceship.speed
             
             self.screen.fill("black")
+            
             pygame.draw.rect(
                 self.screen, (255, 0, 0), 
                 (self.spaceship.position.x,self.spaceship.position.y, self.spaceship.size, self.spaceship.size)
