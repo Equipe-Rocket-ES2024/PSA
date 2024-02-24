@@ -6,7 +6,9 @@ from pygame.locals import (
     K_DOWN,
     K_LEFT,
     K_RIGHT,
-    QUIT
+    QUIT,
+    K_ESCAPE,
+    KEYDOWN
 )
 
 class Game:
@@ -25,6 +27,9 @@ class Game:
             for event in pygame.event.get():
                 if event.type == QUIT:
                     self.running = False
+                elif event.type == KEYDOWN:
+                    if event.key == K_ESCAPE:
+                        self.running = False
 
             keys = pygame.key.get_pressed()
 
