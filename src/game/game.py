@@ -1,6 +1,6 @@
 import pygame
-from config.setup import Setup
-from entities.spaceship import Spaceship
+from src.entities.spaceship.spaceship import Spaceship
+from src.config.setup import Setup
 from pygame.locals import (
     K_UP,
     K_DOWN,
@@ -11,41 +11,53 @@ from pygame.locals import (
     KEYDOWN
 )
 
+
 class Game:
     
     def __init__(self):
-        pygame.init()
+        pygame.display.init()
         self.setup = Setup()
         self.running = True
         self.screen = self.setup.screen
-        self.spaceship = Spaceship(self.screen)
+        self.spaceship = Spaceship(self.screen, None)
         
     def run_game(self):
         clock = pygame.time.Clock()
         
         while self.running:
+            
             for event in pygame.event.get():
                 if event.type == QUIT:
                     self.running = False
+                    pygame.quit()
+                    break
+                
                 elif event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
                         self.running = False
+                        pygame.quit()
 
-            keys = pygame.key.get_pressed()
-
-            self.spaceship.position.x += (keys[K_RIGHT] - keys[K_LEFT]) * self.spaceship.speed
+            if self.running == False:
+                break
             
-            self.spaceship.position.y += (keys[K_DOWN] - keys[K_UP]) * self.spaceship.speed
+            keys = pygame.key.get_pressed()
+            
+            dt = clock.tick(60)          
+            
+            # ALTERAR O CALCULO DE VELOCIDADE
+            self.spaceship._position.x += (keys[K_RIGHT] - keys[K_LEFT]) * self.spaceship._speed * dt
+            self.spaceship._position.y += (keys[K_DOWN] - keys[K_UP]) * \
+                self.spaceship._speed * dt
             
             self.screen.fill("black")
             
             pygame.draw.rect(
                 self.screen, (255, 0, 0), 
-                (self.spaceship.position.x,self.spaceship.position.y, self.spaceship.size, self.spaceship.size)
+                (self.spaceship._position.x,self.spaceship._position.y, self.spaceship._size, self.spaceship._size)
             )
-
+            
             pygame.display.flip()
 
-            clock.tick(60)
+            
 
         pygame.display.quit()
