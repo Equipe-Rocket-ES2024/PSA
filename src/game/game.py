@@ -10,6 +10,7 @@ from pygame.locals import (
     K_ESCAPE,
     KEYDOWN
 )
+# from src.lib.object.object import Object
 
 
 class Game:
@@ -20,6 +21,8 @@ class Game:
         self.running = True
         self.screen = self.setup.screen
         self.spaceship = Spaceship(self.screen, None)
+        self.objects = []
+        # self.add_objects(self.spaceship)
         
     def run_game(self):
         clock = pygame.time.Clock()
@@ -45,15 +48,18 @@ class Game:
             dt = clock.tick(60)          
             
             # ALTERAR O CALCULO DE VELOCIDADE
-            self.spaceship._position.x += (keys[K_RIGHT] - keys[K_LEFT]) * self.spaceship._speed * dt
+            self.spaceship._position.x += (keys[K_RIGHT] - keys[K_LEFT]) * self.spaceship._speed * (dt / 1000)
             self.spaceship._position.y += (keys[K_DOWN] - keys[K_UP]) * \
-                self.spaceship._speed * dt
+                self.spaceship._speed * (dt / 1000)
             
             self.screen.fill("black")
             
+            pixel_to_meters = 20
+            
             pygame.draw.rect(
                 self.screen, (255, 0, 0), 
-                (self.spaceship._position.x,self.spaceship._position.y, self.spaceship._size, self.spaceship._size)
+                (self.spaceship._position.x * pixel_to_meters, self.spaceship._position.y *
+                 pixel_to_meters, self.spaceship._size * pixel_to_meters, self.spaceship._size * pixel_to_meters)
             )
             
             pygame.display.flip()
@@ -61,3 +67,6 @@ class Game:
             
 
         pygame.display.quit()
+        
+    # def add_objects(self, object: Object):
+    #     self.objects.append(object)
