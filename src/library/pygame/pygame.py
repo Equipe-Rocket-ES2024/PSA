@@ -1,0 +1,15 @@
+from src.library.engine.engine import Engine
+import pygame
+
+class PygameEngine(Engine):
+    
+    def __init__(self) -> None:
+        pass
+    
+    
+    def display_init(self) -> None:
+        return pygame.display.init()
+    
+    
+    def start_clock(self) -> None:
+        return pygame.time.Clock()

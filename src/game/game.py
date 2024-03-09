@@ -10,22 +10,25 @@ from pygame.locals import (
     K_ESCAPE,
     KEYDOWN
 )
-# from src.lib.object.object import Object
+from src.library.pygame.pygame import PygameEngine
+from src.library.object.object import Object
+
 
 
 class Game:
     
     def __init__(self):
-        pygame.display.init()
+        self.pygame = PygameEngine()
+        self.pygame.display_init()
         self.setup = Setup()
         self.running = True
         self.screen = self.setup.screen
         self.spaceship = Spaceship(self.screen, None)
         self.objects = []
-        # self.add_objects(self.spaceship)
+        self.add_objects(self.spaceship)
         
     def run_game(self):
-        clock = pygame.time.Clock()
+        clock = self.pygame.start_clock()
         
         while self.running:
             
@@ -68,5 +71,5 @@ class Game:
 
         pygame.display.quit()
         
-    # def add_objects(self, object: Object):
-    #     self.objects.append(object)
+    def add_objects(self, object: Object):
+        self.objects.append(object)
