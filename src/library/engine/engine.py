@@ -10,7 +10,10 @@ class Engine(ABC):
     def display_init(self):
         pass
     
+    @abstractmethod
+    def start_clock(self) -> int:
+        pass
     
     @abstractmethod
-    def start_clock(self) -> None:
+    def display_quit(self) -> None:
         pass

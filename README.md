@@ -12,6 +12,4 @@ pip install -r requirements.txt
 
 # Como rodar?
 
-cd src
-
-python game.py
+python main.py
