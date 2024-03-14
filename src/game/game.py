@@ -58,9 +58,9 @@ class Game:
                  pixel_to_meters, self.spaceship._size * pixel_to_meters, self.spaceship._size * pixel_to_meters)
             )
             
-            pygame.display.flip()
+            self.pygame_engine.display_flip()
 
-        pygame.display.quit()
+        self.pygame_engine.display_init()
         
     def add_objects(self, object: Object):
         self.objects.append(object)

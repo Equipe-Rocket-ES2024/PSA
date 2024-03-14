@@ -15,3 +15,6 @@ class PygameEngine(Engine):
     
     def display_quit(self) -> None:
         return pygame.quit()
+
+    def display_flip(self) -> None:
+        return pygame.display.flip()

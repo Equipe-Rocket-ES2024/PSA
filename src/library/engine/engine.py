@@ -17,3 +17,7 @@ class Engine(ABC):
     @abstractmethod
     def display_quit(self) -> None:
         pass
+    
+    @abstractmethod
+    def display_flip(self) -> None:
+        pass
