@@ -26,8 +26,8 @@ class PygameEngine(Engine):
     def get_key_pressed(self) -> int:
         return pygame.key.get_pressed()
     
-    def default_position(self, pos_x: int, pos_y: int) -> pygame.Vector2:
-        return pygame.Vector2(pos_x, pos_y)
+    def default_position(self, pos_x: float, pos_y: float) -> Vector:
+        return Vector(pos_x, pos_y)
     
     def draw_rect(
         self, 
