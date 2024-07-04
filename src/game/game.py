@@ -41,9 +41,11 @@ class Game:
             if self.running == False:
                 break
                              
-            self.delta_time = self.clock.tick(60)
+            self.delta_time = (self.clock.tick(60) / 1000)
             
-            self.spaceship.move_spaceship(self.delta_time)
+            self.physics_proccess(self.delta_time)
+            
+            self.spaceship.move_spaceship()
             
             self.screen.fill(self.game_config_constants.GAME_BACKGROUND_COLOR)
             
@@ -53,6 +55,10 @@ class Game:
 
         self.pygame_engine.display_init()
         
-    def add_objects(self, object: Object):
+    def add_objects(self, object: Object) -> None:
         self.objects.append(object)
+        
+    def physics_proccess(self, delta_time: float) -> None:
+        for object in self.objects:
+            object.physics_proccess(delta_time)
         

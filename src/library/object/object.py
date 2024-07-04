@@ -4,7 +4,11 @@ class Object:
 
     def __init__(self):
         self._sprite: str = None
-        self._position: Vector = None
-        self._speed: Vector = None
         self._size = 0
+        self._speed = Vector(4, 5)
+        self._position = Vector(4, 5)
         self.pixel_to_meters = 0
+        
+    def physics_proccess(self, delta_time: float) -> None:
+        self._position.x += self._speed.x * delta_time
+        # self._position.y += self._speed.y * delta_time
