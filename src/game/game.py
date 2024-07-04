@@ -4,7 +4,7 @@ from src.config.setup import Setup
 from src.library.pygame.pygame import PygameEngine
 from src.library.object.object import Object
 from src.library.pygame.keys import Keys
-
+from src.library.constants.game_config_constants import GameConfigConstants
 
 class Game:
     
@@ -16,10 +16,12 @@ class Game:
         self.screen = self.setup.screen
         self.spaceship = Spaceship(self.screen, None)
         self.objects = []
+        self.clock = self.pygame_engine.start_clock()
+        self.delta_time = 0
+        self.game_config_constants = GameConfigConstants()
         self.add_objects(self.spaceship)
         
     def run_game(self):
-        clock = self.pygame_engine.start_clock()
         
         while self.running:
             
@@ -38,25 +40,14 @@ class Game:
 
             if self.running == False:
                 break
+                             
+            self.delta_time = self.clock.tick(60)
             
-            keys = pygame.key.get_pressed()
+            self.spaceship.move_spaceship(self.delta_time)
             
-            dt = clock.tick(60)          
+            self.screen.fill(self.game_config_constants.GAME_BACKGROUND_COLOR)
             
-            self.spaceship._position.x += (
-                keys[Keys.K_RIGHT.value] - keys[Keys.K_LEFT.value]) * self.spaceship._speed * (dt / 1000)
-            self.spaceship._position.y += (
-                keys[Keys.K_DOWN.value] - keys[Keys.K_UP.value]) * self.spaceship._speed * (dt / 1000)
-            
-            self.screen.fill("black")
-            
-            pixel_to_meters = 20
-            
-            pygame.draw.rect(
-                self.screen, (255, 0, 0), 
-                (self.spaceship._position.x * pixel_to_meters, self.spaceship._position.y *
-                 pixel_to_meters, self.spaceship._size * pixel_to_meters, self.spaceship._size * pixel_to_meters)
-            )
+            self.spaceship.draw_spaceship()
             
             self.pygame_engine.display_flip()
 

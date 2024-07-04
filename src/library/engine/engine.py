@@ -1,4 +1,9 @@
+from typing import Tuple
+from pygame import Surface
+import pygame
 from abc import ABC, abstractmethod
+
+from src.library.vector.vector import Vector
 
 
 class Engine(ABC):
@@ -20,4 +25,27 @@ class Engine(ABC):
     
     @abstractmethod
     def display_flip(self) -> None:
+        pass
+    
+    @abstractmethod
+    def get_key_pressed(self) -> int:
+        pass
+    
+    @abstractmethod
+    def default_position(self, pos_x: int, pos_y: int) -> pygame.Vector2:
+        pass
+    
+    @abstractmethod
+    def draw_rect(
+        self, 
+        screen: Surface, 
+        color: Tuple[int, int, int], 
+        position: Vector, 
+        size: Tuple[int, int], 
+        pixel_to_meters: int
+    ) -> None:
+        pass
+    
+    @abstractmethod
+    def load_sprite_image(self, src_sprite: str) -> Surface:
         pass
