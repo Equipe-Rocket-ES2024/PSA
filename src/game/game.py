@@ -58,10 +58,8 @@ class Game:
         self.objects.append(object)
         
     def physics_proccess(self, delta_time: float) -> None:
-        screen_width = self.setup.screen_width
-        screen_height = self.setup.screen_height
-
-        print(screen_width)
+        screen_width = self.setup.screen_width / 20
+        screen_height = self.setup.screen_height / 20
         
         for object in self.objects:
             object.physics_proccess(delta_time, screen_width, screen_height)
