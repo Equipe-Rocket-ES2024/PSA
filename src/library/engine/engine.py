@@ -28,7 +28,7 @@ class Engine(ABC):
         pass
     
     @abstractmethod
-    def get_key_pressed(self) -> int:
+    def get_key_pressed(self) -> float:
         pass
     
     @abstractmethod

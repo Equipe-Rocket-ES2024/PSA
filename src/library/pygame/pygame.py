@@ -14,7 +14,7 @@ class PygameEngine(Engine):
     def display_init(self) -> None:
         return pygame.display.init()
     
-    def start_clock(self) -> int:
+    def start_clock(self) -> float:
         return pygame.time.Clock()
     
     def display_quit(self) -> None:
