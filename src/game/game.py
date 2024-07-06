@@ -31,6 +31,9 @@ class Game:
                     self.pygame_engine.display_quit()
                     break
                 
+                elif event.type in [pygame.KEYDOWN, pygame.KEYUP]:
+                    self.spaceship.move_spaceship(event)
+                
                 elif event.type == Keys.KEYDOWN.value:
                     if event.key == Keys.K_ESCAPE.value:
                         self.running = False
@@ -44,8 +47,6 @@ class Game:
             self.delta_time = (self.clock.tick(60) / 1000)
             
             self.physics_proccess(self.delta_time)
-            
-            self.spaceship.move_spaceship()
             
             self.screen.fill(self.game_config_constants.GAME_BACKGROUND_COLOR)
             
