@@ -38,8 +38,6 @@ class Game:
                     if event.key == Keys.K_ESCAPE.value:
                         self.running = False
                         self.pygame_engine.display_quit()
-                        
-
 
             if self.running == False:
                 break
@@ -60,6 +58,11 @@ class Game:
         self.objects.append(object)
         
     def physics_proccess(self, delta_time: float) -> None:
+        screen_width = self.setup.screen_width
+        screen_height = self.setup.screen_height
+
+        print(screen_width)
+        
         for object in self.objects:
-            object.physics_proccess(delta_time)
+            object.physics_proccess(delta_time, screen_width, screen_height)
         
