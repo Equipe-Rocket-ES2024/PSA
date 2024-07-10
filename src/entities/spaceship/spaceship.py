@@ -34,5 +34,4 @@ class Spaceship(Object):
                 self._speed.y = 0
 
     def draw_spaceship(self) -> None:
-        self.pygame_engine.draw_rect(
-            self._screen, (255, 0, 0), self._position, self._size, self.pixel_to_meters)
+        self.pygame_engine.draw_rect(self._screen, (255, 0, 0), self._position, self._size, self.pixel_to_meters)
