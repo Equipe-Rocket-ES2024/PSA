@@ -1,0 +1,3 @@
+05/07 - Entrada: Separando responsabilidade de alguns métodos de movimentação e depurando para corrigir um bug de movimentação.
+
+05/07 - Saída: Ainda realizando a correção da movimentação, e depois começando implementar sprite.
