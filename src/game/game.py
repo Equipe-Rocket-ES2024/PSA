@@ -48,7 +48,7 @@ class Game:
             
             self.screen.fill(self.game_config_constants.GAME_BACKGROUND_COLOR)
             
-            self.spaceship.draw_spaceship()
+            self.spaceship.draw_spaceship_image()
             
             self.pygame_engine.display_flip()
 
