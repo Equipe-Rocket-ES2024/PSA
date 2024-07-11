@@ -40,7 +40,13 @@ class PygameEngine(Engine):
         return pygame.draw.rect(
             screen, (color),
             (position.x * pixel_to_meters, position.y * pixel_to_meters, size * pixel_to_meters, size * pixel_to_meters)
-        )
-        
-    def load_sprite_image(self, src_sprite: str) -> Surface:
-        return pygame.image.load(self.game_config_constants.GAME_BACKGROUND_COLOR).convert_alpha()
+        )    
+
+    def load_sprite_image(self) -> Surface:
+        print('CHEGOU AO LOAD SPRITE')
+        print(self.game_config_constants.PLAYER_SPACESHIP_SPRITE)
+        return pygame.image.load(self.game_config_constants.PLAYER_SPACESHIP_SPRITE).convert_alpha()
+
+    def scale_sprite(self, sprite: Surface, width: int, height: int) -> Surface:
+        print('CHEGOU AO SCALE SPRITE')
+        return pygame.transform.scale(sprite, (width, height))    
