@@ -14,8 +14,11 @@ class Spaceship(Object):
         self._screen: Surface = screen
         self._position = self.pygame_engine.default_position(18, 35)
         self._size = 2
+        self.sizeNav = [50, 50]
         self.pixel_to_meters = 20
         self.spaceship_speed_default = 10
+        self.sprite = self.pygame_engine.load_sprite_image()
+        self.sprite = self.pygame_engine.scale_sprite(self.sprite, self.sizeNav[0], self.sizeNav[1])
         
     def move_spaceship(self, event: pygame.event.EventType) -> None:
         if event.type == pygame.KEYDOWN:
@@ -34,4 +37,7 @@ class Spaceship(Object):
                 self._speed.y = 0
 
     def draw_spaceship(self) -> None:
-        self.pygame_engine.draw_rect(self._screen, (255, 0, 0), self._position, self._size, self.pixel_to_meters)
+       self.pygame_engine.draw_rect(self._screen, (255, 0, 0), self._position, self._size, self.pixel_to_meters)
+
+    def draw_spaceship_image(self) -> None:
+        self._screen.blit(self.sprite, (self._position.x * self.pixel_to_meters, self._position.y * self.pixel_to_meters))
