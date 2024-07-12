@@ -49,3 +49,12 @@ class Engine(ABC):
     @abstractmethod
     def load_sprite_image(self, src_sprite: str) -> Surface:
         pass
+    
+    @abstractmethod
+    def scale_sprite(
+        self, 
+        sprite: Surface, 
+        width: int, 
+        height: int
+    ) -> Surface:
+        pass

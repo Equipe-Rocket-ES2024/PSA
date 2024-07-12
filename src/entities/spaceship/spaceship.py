@@ -36,8 +36,5 @@ class Spaceship(Object):
             elif event.key in [pygame.K_DOWN, pygame.K_UP]:
                 self._speed.y = 0
 
-    def draw_spaceship(self) -> None:
-       self.pygame_engine.draw_rect(self._screen, (255, 0, 0), self._position, self._size, self.pixel_to_meters)
-
-    def draw_spaceship_image(self) -> None:
+    def draw_object(self) -> None:
         self._screen.blit(self.sprite, (self._position.x * self.pixel_to_meters, self._position.y * self.pixel_to_meters))

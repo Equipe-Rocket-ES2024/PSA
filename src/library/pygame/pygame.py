@@ -8,6 +8,7 @@ from src.library.constants.game_config_constants import GameConfigConstants
 class PygameEngine(Engine):
     
     def __init__(self) -> None:
+        super().__init__()
         self.game_config_constants = GameConfigConstants()
         pass
     
@@ -43,10 +44,7 @@ class PygameEngine(Engine):
         )    
 
     def load_sprite_image(self) -> Surface:
-        print('CHEGOU AO LOAD SPRITE')
-        print(self.game_config_constants.PLAYER_SPACESHIP_SPRITE)
         return pygame.image.load(self.game_config_constants.PLAYER_SPACESHIP_SPRITE).convert_alpha()
 
     def scale_sprite(self, sprite: Surface, width: int, height: int) -> Surface:
-        print('CHEGOU AO SCALE SPRITE')
         return pygame.transform.scale(sprite, (width, height))    

@@ -15,11 +15,10 @@ class Game:
         self.running = True
         self.screen = self.setup.screen
         self.spaceship = Spaceship(self.screen, None)
-        self.objects = []
+        self.objects = [self.spaceship]
         self.clock = self.pygame_engine.start_clock()
         self.delta_time = 0
         self.game_config_constants = GameConfigConstants()
-        self.add_objects(self.spaceship)
         
     def run_game(self):
         
@@ -48,7 +47,8 @@ class Game:
             
             self.screen.fill(self.game_config_constants.GAME_BACKGROUND_COLOR)
             
-            self.spaceship.draw_spaceship_image()
+            for object in self.objects:
+                object.draw_object()
             
             self.pygame_engine.display_flip()
 
