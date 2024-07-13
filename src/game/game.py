@@ -1,4 +1,5 @@
 import pygame
+from src.entities.enemy.enemy import Enemy
 from src.entities.spaceship.spaceship import Spaceship
 from src.config.setup import Setup
 from src.library.pygame.pygame import PygameEngine
@@ -19,6 +20,8 @@ class Game:
         self.clock = self.pygame_engine.start_clock()
         self.delta_time = 0
         self.game_config_constants = GameConfigConstants()
+        self.enemy = Enemy(self.screen, None)
+        self.add_objects(self.enemy)
         
     def run_game(self):
         
@@ -31,7 +34,7 @@ class Game:
                     break
                 
                 elif event.type in [pygame.KEYDOWN, pygame.KEYUP]:
-                    self.spaceship.move_spaceship(event)
+                    self.spaceship.move_object(event)
                 
                 elif event.type == Keys.KEYDOWN.value:
                     if event.key == Keys.K_ESCAPE.value:
@@ -43,7 +46,7 @@ class Game:
                              
             self.delta_time = (self.clock.tick(60) / 1000)
             
-            self.physics_proccess(self.delta_time)
+            self.physics_process(self.delta_time)
             
             self.screen.fill(self.game_config_constants.GAME_BACKGROUND_COLOR)
             
@@ -57,10 +60,10 @@ class Game:
     def add_objects(self, object: Object) -> None:
         self.objects.append(object)
         
-    def physics_proccess(self, delta_time: float) -> None:
+    def physics_process(self, delta_time: float) -> None:
         screen_width = self.setup.screen_width / 20
         screen_height = self.setup.screen_height / 20
         
         for object in self.objects:
-            object.physics_proccess(delta_time, screen_width, screen_height)
+            object.physics_process(delta_time, screen_width, screen_height)
         

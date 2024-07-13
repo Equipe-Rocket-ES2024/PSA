@@ -9,7 +9,7 @@ class Object:
         self._position = Vector(0, 0)
         self.pixel_to_meters = 0
 
-    def physics_proccess(self, delta_time: float, screen_width: int, screen_height: int) -> None:
+    def physics_process(self, delta_time: float, screen_width: int, screen_height: int) -> None:
         # Calcular a nova posição
         new_x = self._position.x + self._speed.x * delta_time
         new_y = self._position.y + self._speed.y * delta_time

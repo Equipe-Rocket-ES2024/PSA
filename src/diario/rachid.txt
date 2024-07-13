@@ -1,3 +1,6 @@
 05/07 - Entrada: Separando responsabilidade de alguns métodos de movimentação e depurando para corrigir um bug de movimentação.
 
 05/07 - Saída: Ainda realizando a correção da movimentação, e depois começando implementar sprite.
+
+05/07 - Entrada: Abstraindo a capacidade de renderizar os objetos, para que não houvesse a necessidade de chamar os métodos
+individualmente de cada objeto dentro do laço de repetição da classe Game.
