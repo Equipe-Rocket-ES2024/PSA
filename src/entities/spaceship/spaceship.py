@@ -3,6 +3,8 @@ from src.library.object.object import Object
 from src.library.pygame.pygame import PygameEngine
 from src.library.vector.vector import Vector
 from src.library.pygame.keys import Keys
+from src.library.constants.game_config_constants import GameConfigConstants
+
 import pygame
 
 
@@ -10,13 +12,14 @@ class Spaceship(Object):
 
     def __init__(self, screen: Surface, position: Vector) -> None:
         super().__init__()
+        self.game_config_constants = GameConfigConstants()
         self.pygame_engine = PygameEngine()
         self._screen: Surface = screen
         self._position = self.pygame_engine.default_position(18, 35)
         self.size_nave = [80, 80]
         self.pixel_to_meters = 20
         self.spaceship_speed_default = 30
-        self.sprite = self.pygame_engine.load_sprite_image()
+        self.sprite = self.pygame_engine.load_sprite_image(self.game_config_constants.PLAYER_SPACESHIP_SPRITE)
         self.sprite = self.pygame_engine.scale_sprite(self.sprite, self.size_nave[0], self.size_nave[1])
         
     def move_object(self, event: pygame.event.EventType) -> None:

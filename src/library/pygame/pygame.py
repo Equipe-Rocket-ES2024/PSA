@@ -3,13 +3,11 @@ from src.library.engine.engine import Engine
 import pygame
 from pygame import Surface
 from src.library.vector.vector import Vector
-from src.library.constants.game_config_constants import GameConfigConstants
 
 class PygameEngine(Engine):
     
     def __init__(self) -> None:
         super().__init__()
-        self.game_config_constants = GameConfigConstants()
         pass
     
     def display_init(self) -> None:
@@ -43,8 +41,8 @@ class PygameEngine(Engine):
             (position.x * pixel_to_meters, position.y * pixel_to_meters, size * pixel_to_meters, size * pixel_to_meters)
         )    
 
-    def load_sprite_image(self) -> Surface:
-        return pygame.image.load(self.game_config_constants.PLAYER_SPACESHIP_SPRITE).convert_alpha()
+    def load_sprite_image(self, path_image: str) -> Surface:
+        return pygame.image.load(path_image).convert_alpha()
 
     def scale_sprite(self, sprite: Surface, width: int, height: int) -> Surface:
         return pygame.transform.scale(sprite, (width, height))    
