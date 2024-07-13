@@ -2,5 +2,7 @@
 
 05/07 - Saída: Ainda realizando a correção da movimentação, e depois começando implementar sprite.
 
-05/07 - Entrada: Abstraindo a capacidade de renderizar os objetos, para que não houvesse a necessidade de chamar os métodos
+12/07 - Entrada: Abstraindo a capacidade de renderizar os objetos, para que não houvesse a necessidade de chamar os métodos
 individualmente de cada objeto dentro do laço de repetição da classe Game.
+
+12/07 - Saída: Inserindo inimigos na lista de objetos.

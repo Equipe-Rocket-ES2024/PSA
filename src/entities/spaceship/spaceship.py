@@ -13,7 +13,7 @@ class Spaceship(Object):
         self.pygame_engine = PygameEngine()
         self._screen: Surface = screen
         self._position = self.pygame_engine.default_position(18, 35)
-        self.size_nave = [50, 50]
+        self.size_nave = [80, 80]
         self.pixel_to_meters = 20
         self.spaceship_speed_default = 30
         self.sprite = self.pygame_engine.load_sprite_image()
