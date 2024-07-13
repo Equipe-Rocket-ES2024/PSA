@@ -20,7 +20,7 @@ class Enemy(Object):
             )
         self._size_nav = [80, 80]
         self._pixel_to_meters = 10
-        self._enemy_speed_default = 7
+        self._enemy_speed_default = 50
         self._sprite = self.pygame_engine.load_sprite_image()
         self._sprite = self.pygame_engine.scale_sprite(
             self._sprite, self._size_nav[0], self._size_nav[1]
