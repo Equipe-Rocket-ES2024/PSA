@@ -52,6 +52,11 @@ class Game:
             
             for object in self.objects:
                 object.draw_object()
+                
+                if isinstance(object, Enemy):
+                    object.move_enemy(self.delta_time)
+                    object.draw_object()
+                
             
             self.pygame_engine.display_flip()
 

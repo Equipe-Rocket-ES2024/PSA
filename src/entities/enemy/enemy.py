@@ -29,12 +29,22 @@ class Enemy(Object):
         self._move_interval = 1000
         self._current_direction = Vector(1, 0)
 
-    def move_object(self, delta_time: float) -> None:
+    def move_enemy(self, delta_time: float) -> None:
         self._move_timer += delta_time
         
-        if self._move_timer >= self._move_interval:
-            self._current_direction = Vector(random.uniform(-1, 1), random.uniform(-1, 1)).normalize()
+        if self._move_timer <= self._move_interval:
             self._move_timer = 0
+            
+            direction = random.choice(['left', 'right', 'up', 'down'])
+
+            if direction == 'left':
+                self._speed.x = -self._enemy_speed_default
+            elif direction == 'right':
+                self._speed.x = self._enemy_speed_default
+            elif direction == 'up':
+                self._speed.y = -self._enemy_speed_default
+            elif direction == 'down':
+                self._speed.y = self._enemy_speed_default
 
     def draw_object(self) -> None:
         self._screen.blit(self._sprite, (self._position.x *
