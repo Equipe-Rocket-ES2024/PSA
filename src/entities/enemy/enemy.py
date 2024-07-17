@@ -21,8 +21,8 @@ class Enemy(Object):
                 random.randint(0, self._screen.get_height() - 1)
             )
         self._size_nav = [80, 80]
-        self._pixel_to_meters = 10
-        self._enemy_speed_default = 50
+        self._pixel_to_meters = 20
+        self._enemy_speed_default = 30
         self._sprite = self.pygame_engine.load_sprite_image(self.game_config_constants.ENEMY_SPACESHIP_SPRITE)
         self._sprite = self.pygame_engine.scale_sprite(
             self._sprite, self._size_nav[0], self._size_nav[1]
