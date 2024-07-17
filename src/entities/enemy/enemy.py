@@ -4,6 +4,7 @@ from src.library.object.object import Object
 from src.library.pygame.pygame import PygameEngine
 from src.library.vector.vector import Vector
 from src.library.pygame.keys import Keys
+from src.library.constants.game_config_constants import GameConfigConstants
 import pygame
 
 
@@ -11,6 +12,7 @@ class Enemy(Object):
 
     def __init__(self, screen: Surface, position: Vector) -> None:
         super().__init__()
+        self.game_config_constants = GameConfigConstants()
         self.pygame_engine = PygameEngine()
         self._screen: Surface = screen
         if position is None:
@@ -21,7 +23,7 @@ class Enemy(Object):
         self._size_nav = [80, 80]
         self._pixel_to_meters = 10
         self._enemy_speed_default = 50
-        self._sprite = self.pygame_engine.load_sprite_image()
+        self._sprite = self.pygame_engine.load_sprite_image(self.game_config_constants.ENEMY_SPACESHIP_SPRITE)
         self._sprite = self.pygame_engine.scale_sprite(
             self._sprite, self._size_nav[0], self._size_nav[1]
         )

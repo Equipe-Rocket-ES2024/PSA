@@ -47,7 +47,7 @@ class Engine(ABC):
         pass
     
     @abstractmethod
-    def load_sprite_image(self, src_sprite: str) -> Surface:
+    def load_sprite_image(self, path_image: str) -> Surface:
         pass
     
     @abstractmethod
