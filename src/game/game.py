@@ -48,17 +48,7 @@ class Game:
             
             self.physics_process(self.delta_time)
             
-            self.screen.fill(self.game_config_constants.GAME_BACKGROUND_COLOR)
-            
-            for object in self.objects:
-                object.draw_object()
-                
-                if isinstance(object, Enemy):
-                    object.move_enemy(self.delta_time)
-                    object.draw_object()
-                
-            
-            self.pygame_engine.display_flip()
+            self.render()
 
         self.pygame_engine.display_init()
         
@@ -71,5 +61,17 @@ class Game:
         
         for object in self.objects:
             object.physics_process(
-                delta_time, limit_screen_width, limit_screen_height)
+                delta_time, limit_screen_width, limit_screen_height
+            )
+            
+            if isinstance(object, Enemy):
+                object.move_enemy(self.delta_time)
+                
+    def render(self):
+        self.screen.fill(self.game_config_constants.GAME_BACKGROUND_COLOR)
+
+        for object in self.objects:
+            object.draw_object()
+
+        self.pygame_engine.display_flip()
         
