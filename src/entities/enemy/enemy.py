@@ -3,9 +3,7 @@ from pygame import Surface
 from src.library.object.object import Object
 from src.library.pygame.pygame import PygameEngine
 from src.library.vector.vector import Vector
-from src.library.pygame.keys import Keys
 from src.library.constants.game_config_constants import GameConfigConstants
-import pygame
 
 
 class Enemy(Object):
@@ -39,31 +37,26 @@ class Enemy(Object):
 
     def move_object(self, delta_time: float) -> None:
         self._move_timer += delta_time
-        half_width = self._screen.get_width() // 2
-
-        move_amount = self._enemy_speed_default * delta_time
-
+        
         if self._move_timer >= self._move_interval:
             self._move_timer %= self._move_interval
             self._zigzag_step = (self._zigzag_step + 1) % len(self._zigzag_pattern)
             self._direction = self._zigzag_pattern[self._zigzag_step][0]
 
         if self._direction == 'left':
-            new_x = max(0, self._position.x - move_amount)
+            self._speed.x = -self._enemy_speed_default
         elif self._direction == 'right':
-            new_x = min(half_width, self._position.x + move_amount)
+            self._speed.x = self._enemy_speed_default
         else:
-            new_x = self._position.x
+            self._speed.x = 0
 
         if self._direction == 'up':
-            new_y = max(0, self._position.y - move_amount)
+            self._speed.y = -self._enemy_speed_default
         elif self._direction == 'down':
-            new_y = min(self._screen.get_height(), self._position.y + move_amount)
+            self._speed.y = self._enemy_speed_default
         else:
-            new_y = self._position.y
+            self._speed.y = 0
 
-        self._position.x = new_x
-        self._position.y = new_y
 
     def draw_object(self) -> None:
         self._screen.blit(self._sprite, (self._position.x *

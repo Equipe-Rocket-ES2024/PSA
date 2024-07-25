@@ -17,15 +17,11 @@ class Bullet(Object):
         self._position = self.pygame_engine.default_position(position.x, position.y)
         self.size = [10, 10]
         self.pixel_to_meters = 20
-        self.bullet_speed_default = 40
+        self.bullet_speed_default = 30
         self.color = pygame.Color('white')
 
     def move_object(self, delta_time: float) -> None:
-        move_amount = self.bullet_speed_default * delta_time
-        new_y = self._position.y - move_amount
-        self._position.y = new_y
-        if self._position.y + self.size[1] < 0:
-            self.destroy()
+        self._speed.y = -self.bullet_speed_default
                 
     def draw_object(self) -> None:
         draw.rect(self._screen, self.color, (self._position.x * self.pixel_to_meters + 35, self._position.y * self.pixel_to_meters, self.size[0], self.size[1]))

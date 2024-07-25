@@ -22,7 +22,7 @@ class Spaceship(Object):
         self.sprite = self.pygame_engine.load_sprite_image(self.game_config_constants.PLAYER_SPACESHIP_SPRITE)
         self.sprite = self.pygame_engine.scale_sprite(self.sprite, self.size_nave[0], self.size_nave[1])
         
-    def move_object(self, event: pygame.event.EventType) -> None:
+    def move_object(self, event: pygame.event.EventType) -> None:        
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RIGHT:
                 self._speed.x = self.spaceship_speed_default
