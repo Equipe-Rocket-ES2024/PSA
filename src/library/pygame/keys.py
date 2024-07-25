@@ -6,7 +6,8 @@ from pygame.locals import (
     K_RIGHT,
     QUIT,
     K_ESCAPE,
-    KEYDOWN
+    KEYDOWN,
+    K_SPACE
 )
 
 class Keys(Enum):
@@ -17,3 +18,4 @@ class Keys(Enum):
     QUIT = QUIT
     K_ESCAPE = K_ESCAPE
     KEYDOWN = KEYDOWN
+    K_SPACE = K_SPACE

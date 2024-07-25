@@ -1,5 +1,6 @@
 import pygame
 from src.entities.enemy.enemy import Enemy
+from src.entities.bullet.bullet import Bullet
 from src.entities.spaceship.spaceship import Spaceship
 from src.config.setup import Setup
 from src.library.pygame.pygame import PygameEngine
@@ -35,7 +36,9 @@ class Game:
                 
                 elif event.type in [pygame.KEYDOWN, pygame.KEYUP]:
                     self.spaceship.move_object(event)
-                
+                    if event.type == pygame.KEYDOWN and event.key == Keys.K_SPACE.value:
+                        self.add_objects(Bullet(self.screen, self.spaceship._position))
+                        
                 elif event.type == Keys.KEYDOWN.value:
                     if event.key == Keys.K_ESCAPE.value:
                         self.running = False
@@ -65,7 +68,9 @@ class Game:
             )
             
             if isinstance(object, Enemy):
-                object.move_enemy(self.delta_time)
+                object.move_object(self.delta_time)
+            elif isinstance(object, Bullet):
+                object.move_object(self.delta_time)
                 
     def render(self):
         self.screen.fill(self.game_config_constants.GAME_BACKGROUND_COLOR)

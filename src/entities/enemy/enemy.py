@@ -37,7 +37,7 @@ class Enemy(Object):
         self._direction = 'right'
         self._speed = Vector(0, 0)
 
-    def move_enemy(self, delta_time: float) -> None:
+    def move_object(self, delta_time: float) -> None:
         self._move_timer += delta_time
         half_width = self._screen.get_width() // 2
 
