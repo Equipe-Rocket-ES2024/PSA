@@ -4,7 +4,7 @@ class Object:
 
     def __init__(self):
         self._sprite: str = None
-        self._size = 0
+        self._size = [0, 0]
         self._speed = Vector(0, 0)
         self._position = Vector(0, 0)
         self.pixel_to_meters = 0
@@ -15,13 +15,13 @@ class Object:
 
         if new_x < 0:
             new_x = 0
-        elif new_x + self._size > screen_width:
-            new_x = screen_width - self._size
+        elif new_x + self._size[0] > screen_width:
+            new_x = screen_width - self._size[0]
         
         if new_y < 0:
             new_y = 0
-        elif new_y + self._size > screen_height:
-            new_y = screen_height - self._size
+        elif new_y + self._size[1] > screen_height:  
+            new_y = screen_height - self._size[1]
         
         self._position.x = new_x
         self._position.y = new_y

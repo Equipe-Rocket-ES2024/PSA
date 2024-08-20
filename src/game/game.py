@@ -3,6 +3,7 @@ from src.entities.enemy.enemy import Enemy
 from src.entities.bullet.bullet import Bullet
 from src.entities.spaceship.spaceship import Spaceship
 from src.config.setup import Setup
+from src.library.hitbox.hitbox import Hitbox
 from src.library.pygame.pygame import PygameEngine
 from src.library.object.object import Object
 from src.library.pygame.keys import Keys
@@ -58,19 +59,23 @@ class Game:
     def add_objects(self, object: Object) -> None:
         self.objects.append(object)
         
-    def physics_process(self, delta_time: float) -> None:
-        limit_screen_width = self.screen.get_width() / 22
-        limit_screen_height = self.screen.get_height() / 22
-        
-        for object in self.objects:
-            object.physics_process(
-                delta_time, limit_screen_width, limit_screen_height
-            )
+
+    def physics_process(self, delta_time: float) -> None:        
+        for obj in self.objects:
+            obj.physics_process(delta_time, self.screen.get_width(), self.screen.get_height())
             
-            if isinstance(object, Enemy):
-                object.move_object(self.delta_time)
-            elif isinstance(object, Bullet):
-                object.move_object(self.delta_time)
+            if isinstance(obj, Enemy):
+                obj.move_object(self.delta_time)
+            elif isinstance(obj, Bullet):
+                obj.move_object()
+
+        for i in range(len(self.objects)):
+            for j in range(i + 1, len(self.objects)):
+                obj1 = self.objects[i]
+                obj2 = self.objects[j]
+                if Hitbox.check_collision(obj1.hitbox, obj2.hitbox):
+                    print(f"Collision detected between {type(obj1).__name__} and {type(obj2).__name__}")
+                            
                 
     def render(self):
         self.screen.fill(self.game_config_constants.GAME_BACKGROUND_COLOR)
