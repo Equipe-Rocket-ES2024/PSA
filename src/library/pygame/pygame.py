@@ -28,6 +28,20 @@ class PygameEngine(Engine):
     def default_position(self, pos_x: float, pos_y: float) -> Vector:
         return Vector(pos_x, pos_y)
     
+    def create_rect(
+        self, 
+        pos_x: float, 
+        pos_y: float,
+        width: int, 
+        height: int,
+    ):
+        return pygame.Rect(
+            pos_x, 
+            pos_y, 
+            width,
+            height
+        )        
+    
     def draw_rect(
         self, 
         screen: Surface, 
@@ -35,11 +49,12 @@ class PygameEngine(Engine):
         position: Vector, 
         size: Tuple[int, int], 
         pixel_to_meters: int
-    ) -> None:
+    ):
         return pygame.draw.rect(
             screen, (color),
-            (position.x * pixel_to_meters, position.y * pixel_to_meters, size * pixel_to_meters, size * pixel_to_meters)
-        )    
+            (position.x * pixel_to_meters, position.y * pixel_to_meters,
+                size * pixel_to_meters, size * pixel_to_meters)
+        )
 
     def load_sprite_image(self, path_image: str) -> Surface:
         return pygame.image.load(path_image).convert_alpha()

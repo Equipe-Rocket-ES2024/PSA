@@ -38,7 +38,7 @@ class Game:
                 elif event.type in [pygame.KEYDOWN, pygame.KEYUP]:
                     self.spaceship.move_object(event)
                     if event.type == pygame.KEYDOWN and event.key == Keys.K_SPACE.value:
-                        self.add_objects(Bullet(self.screen, self.spaceship._position))
+                        self.add_objects(Bullet(self.screen, self.spaceship.position))
                         
                 elif event.type == Keys.KEYDOWN.value:
                     if event.key == Keys.K_ESCAPE.value:
