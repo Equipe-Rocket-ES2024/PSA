@@ -15,12 +15,16 @@ class Bullet(Object):
         self.game_config_constants = GameConfigConstants()
         self.pygame_engine = PygameEngine()
         self.screen: Surface = screen
-        starting_x = position.x
+        starting_x = position.x + 1.7
         starting_y = position.y - self.size[1] - 1
         self.position = self.pygame_engine.default_position(starting_x, starting_y)
         self.size = [10, 10]
-        self.pixel_to_meters = 20
         self.bullet_speed_default = 30
+        self.sprite = self.pygame_engine.load_sprite_image(
+            self.game_config_constants.BULLET_SPRITE)
+        self.sprite = self.pygame_engine.scale_sprite(
+            self.sprite, self.size[0], self.size[1]
+        )
         self.color = pygame.Color('white')
         self.hitbox = Hitbox(self, Vector(1, 1), Vector(0, 0))
 
@@ -32,6 +36,3 @@ class Bullet(Object):
         super().physics_process(delta_time, screen_width, screen_height)
         self.hitbox.update()
         
-                
-    def draw_object(self) -> None:
-        draw.rect(self.screen, self.color, (self.position.x * self.pixel_to_meters + 35, self.position.y * self.pixel_to_meters, self.size[0], self.size[1]))

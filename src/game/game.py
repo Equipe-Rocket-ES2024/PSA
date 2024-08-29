@@ -76,7 +76,7 @@ class Game:
         self.screen.fill(self.game_config_constants.GAME_BACKGROUND_COLOR)
 
         for object in self.objects:
-            object.draw_object()
+            object.draw_object(self.screen)
 
         self.pygame_engine.display_flip()
         
@@ -88,10 +88,10 @@ class Game:
                     obj1 = self.objects[i]
                     obj2 = self.objects[j]
                 if Hitbox.check_collision(obj1.hitbox, obj2.hitbox):
-                    if isinstance(obj1, Spaceship):
-                        return
-                    objects_remove.append(obj1)
-                    print("removi inimigo")
+                    if isinstance(obj1, Enemy) or isinstance(obj1, Bullet):
+                        objects_remove.append(obj1)
+                        objects_remove.append(obj2)
+                        print("removi inimigo")
                     
                     print(
                         f"Collision detected between {type(obj1).__name__} and {type(obj2).__name__}")

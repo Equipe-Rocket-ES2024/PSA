@@ -11,16 +11,16 @@ class Hitbox:
         self.height = object.size[1] * scale.y
         self.pygame_engine = PygameEngine()
         self.rect = self.pygame_engine.create_rect(
-            object.position.x * object.pixel_to_meters,
-            object.position.y * object.pixel_to_meters,
+            object.position.x * object.meters_to_pixel,
+            object.position.y * object.meters_to_pixel,
             self.width, 
             self.height
         )       
 
-    def update(self):
-        self.rect.x = (self.object.position.x + self.displacement.x) * self.object.pixel_to_meters
-        self.rect.y = (self.object.position.y + self.displacement.y) * self.object.pixel_to_meters
 
+    def update(self):
+        self.rect.x = (self.object.position.x + self.displacement.x) * self.object.meters_to_pixel
+        self.rect.y = (self.object.position.y + self.displacement.y) * self.object.meters_to_pixel
 
 
     @staticmethod

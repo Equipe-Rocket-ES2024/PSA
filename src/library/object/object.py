@@ -3,25 +3,34 @@ from src.library.vector.vector import Vector
 class Object:
 
     def __init__(self):
-        self._sprite: str = None
+        self.sprite: str = None
         self.size = [0, 0]
         self._speed = Vector(0, 0)
         self.position = Vector(0, 0)
-        self.pixel_to_meters = 0
+        self.meters_to_pixel = 10
+
 
     def physics_process(self, delta_time: float, screen_width: int, screen_height: int) -> None:
-        new_x = self.position.x + self._speed.x * delta_time
-        new_y = self.position.y + self._speed.y * delta_time
+        max_x = (screen_width / self.meters_to_pixel) - (self.size[0] / 10)
+        max_y = (screen_height / self.meters_to_pixel) - (self.size[1] / 10)
 
-        if new_x < 0:
-            new_x = 0
-        elif new_x + self.size[0] > screen_width:
-            new_x = screen_width - self.size[0]
-        
-        if new_y < 0:
-            new_y = 0
-        elif new_y + self.size[1] > screen_height:  
-            new_y = screen_height - self.size[1]
-        
-        self.position.x = new_x
-        self.position.y = new_y
+        print("max x: ")
+        print(max_x)
+        print("max y: ")
+        print(max_y)
+
+        max_x = max(0, max_x)
+        max_y = max(0, max_y)
+
+        self.position.x += self._speed.x * delta_time
+        self.position.y += self._speed.y * delta_time
+
+        self.position.x = max(0, min(self.position.x, max_x))
+        self.position.y = max(0, min(self.position.y, max_y))
+
+        #print(f"Posição X: {self.position.x}, Posição Y: {self.position.y}, Limite X: {max_x}, Limite Y: {max_y}")
+
+
+    def draw_object(self, screen) -> None:
+        screen.blit(self.sprite, (self.position.x *
+                         self.meters_to_pixel, self.position.y * self.meters_to_pixel))

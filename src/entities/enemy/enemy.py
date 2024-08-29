@@ -14,18 +14,13 @@ class Enemy(Object):
         self.game_config_constants = GameConfigConstants()
         self.pygame_engine = PygameEngine()
         self.screen: Surface = screen
-        if position is None:
-            position = Vector(
-                random.randint(0, self.screen.get_width()),
-                random.randint(0, self.screen.get_height())
-            )
-        self.size = [80, 80]
-        self.pixel_to_meters = 20
-        self._enemy_speed_default = 10
-        self._sprite = self.pygame_engine.load_sprite_image(
+        self.position = self.pygame_engine.default_position(35, 18)
+        self.size = [50, 50]
+        self._enemy_speed_default = 20
+        self.sprite = self.pygame_engine.load_sprite_image(
             self.game_config_constants.ENEMY_SPACESHIP_SPRITE)
-        self._sprite = self.pygame_engine.scale_sprite(
-            self._sprite, self.size[0], self.size[1]
+        self.sprite = self.pygame_engine.scale_sprite(
+            self.sprite, self.size[0], self.size[1]
         )
         self._move_timer = 0
         self._move_interval = 0.5
@@ -50,7 +45,3 @@ class Enemy(Object):
         super().physics_process(delta_time, screen_width, screen_height)
         self.hitbox.update()
     
-            
-    def draw_object(self) -> None:
-        self.screen.blit(self._sprite, (self.position.x *
-                          self.pixel_to_meters, self.position.y * self.pixel_to_meters))
