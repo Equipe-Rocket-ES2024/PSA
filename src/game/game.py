@@ -69,7 +69,7 @@ class Game:
             elif isinstance(obj, Bullet):
                 obj.move_object()
                 
-            self.colision()
+            self.handle_collision()
 
                 
     def render(self):
@@ -80,7 +80,7 @@ class Game:
 
         self.pygame_engine.display_flip()
         
-    def colision(self): 
+    def handle_collision(self): 
         objects_remove = [];
         for i in range(len(self.objects)):
             for j in range(i + 1, len(self.objects)):
