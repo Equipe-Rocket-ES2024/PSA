@@ -23,6 +23,7 @@ class Spaceship(Object):
         self.sprite = self.pygame_engine.scale_sprite(
             self.sprite, self.size[0], self.size[1])
         self.hitbox = Hitbox(self, Vector(1, 1), Vector(0, 0))
+
         
     def move_object(self, event: pygame.event.EventType) -> None:        
         if event.type == pygame.KEYDOWN:
