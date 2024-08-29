@@ -68,14 +68,9 @@ class Game:
                 obj.move_object(self.delta_time)
             elif isinstance(obj, Bullet):
                 obj.move_object()
+                
+            self.colision()
 
-        for i in range(len(self.objects)):
-            for j in range(i + 1, len(self.objects)):
-                obj1 = self.objects[i]
-                obj2 = self.objects[j]
-                if Hitbox.check_collision(obj1.hitbox, obj2.hitbox):
-                    print(f"Collision detected between {type(obj1).__name__} and {type(obj2).__name__}")
-                            
                 
     def render(self):
         self.screen.fill(self.game_config_constants.GAME_BACKGROUND_COLOR)
@@ -85,3 +80,21 @@ class Game:
 
         self.pygame_engine.display_flip()
         
+    def colision(self): 
+        objects_remove = [];
+        for i in range(len(self.objects)):
+            for j in range(i + 1, len(self.objects)):
+                if self.objects and len(self.objects) > 0:
+                    obj1 = self.objects[i]
+                    obj2 = self.objects[j]
+                if Hitbox.check_collision(obj1.hitbox, obj2.hitbox):
+                    if isinstance(obj1, Spaceship):
+                        return
+                    objects_remove.append(obj1)
+                    print("removi inimigo")
+                    
+                    print(
+                        f"Collision detected between {type(obj1).__name__} and {type(obj2).__name__}")
+        
+        self.objects = list(
+            filter(lambda x: x not in objects_remove, self.objects))
