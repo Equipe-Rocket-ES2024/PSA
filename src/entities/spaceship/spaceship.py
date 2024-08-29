@@ -18,7 +18,6 @@ class Spaceship(Object):
         self.screen: Surface = screen
         self.position = self.pygame_engine.default_position(18, 35)
         self.size = [80, 80]
-        self.pixel_to_meters = 20
         self.spaceship_speed_default = 10
         self.sprite = self.pygame_engine.load_sprite_image(self.game_config_constants.PLAYER_SPACESHIP_SPRITE)
         self.sprite = self.pygame_engine.scale_sprite(
@@ -45,5 +44,4 @@ class Spaceship(Object):
         super().physics_process(delta_time, screen_width, screen_height)
         self.hitbox.update()
 
-    def draw_object(self) -> None:
-        self.screen.blit(self.sprite, (self.position.x * self.pixel_to_meters, self.position.y * self.pixel_to_meters))
+    
