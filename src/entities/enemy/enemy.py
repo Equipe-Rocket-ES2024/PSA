@@ -14,13 +14,9 @@ class Enemy(Object):
         self.game_config_constants = GameConfigConstants()
         self.pygame_engine = PygameEngine()
         self.screen: Surface = screen
-        if position is None:
-            position = Vector(
-                random.randint(0, self.screen.get_width()),
-                random.randint(0, self.screen.get_height())
-            )
-        self.size = [80, 80]
-        self._enemy_speed_default = 10
+        self.position = self.pygame_engine.default_position(35, 18)
+        self.size = [40, 40]
+        self._enemy_speed_default = 20
         self.sprite = self.pygame_engine.load_sprite_image(
             self.game_config_constants.ENEMY_SPACESHIP_SPRITE)
         self.sprite = self.pygame_engine.scale_sprite(

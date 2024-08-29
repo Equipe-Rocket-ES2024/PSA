@@ -17,10 +17,10 @@ class Hitbox:
             self.height
         )       
 
+
     def update(self):
         self.rect.x = (self.object.position.x + self.displacement.x) * self.object.meters_to_pixel
         self.rect.y = (self.object.position.y + self.displacement.y) * self.object.meters_to_pixel
-
 
 
     @staticmethod
