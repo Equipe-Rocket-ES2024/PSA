@@ -51,11 +51,14 @@ class Game:
             self.delta_time = (self.clock.tick(60) / 1000)
             
             self.physics_process(self.delta_time)
+
+            self.remove_out_of_bounds_bullets()
             
             self.render()
 
         self.pygame_engine.display_init()
         
+
     def add_objects(self, object: Object) -> None:
         self.objects.append(object)
         
@@ -80,6 +83,7 @@ class Game:
 
         self.pygame_engine.display_flip()
         
+
     def handle_collision(self): 
         objects_remove = [];
         for i in range(len(self.objects)):
@@ -98,3 +102,16 @@ class Game:
         
         self.objects = list(
             filter(lambda x: x not in objects_remove, self.objects))
+
+
+    def remove_out_of_bounds_bullets(self):
+        objects_to_remove = []
+        
+        for obj in self.objects:
+            if isinstance(obj, Bullet):
+                max_x = (self.setup.screen_width / obj.meters_to_pixel) - (obj.size[0] / obj.meters_to_pixel)
+                max_y = (self.setup.screen_height/ obj.meters_to_pixel) - (obj.size[1] / obj.meters_to_pixel)
+                if obj.position.y <= 0 or obj.position.x <= 0 or obj.position.y >= max_x or obj.position.x >= max_y:
+                    objects_to_remove.append(obj)
+        
+        self.objects = list(filter(lambda x: x not in objects_to_remove, self.objects))

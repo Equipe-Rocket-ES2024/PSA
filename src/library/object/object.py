@@ -1,7 +1,7 @@
 from src.library.vector.vector import Vector
 
 class Object:
-
+    
     def __init__(self):
         self.sprite: str = None
         self.size = [0, 0]
@@ -13,11 +13,6 @@ class Object:
     def physics_process(self, delta_time: float, screen_width: int, screen_height: int) -> None:
         max_x = (screen_width / self.meters_to_pixel) - (self.size[0] / self.meters_to_pixel)
         max_y = (screen_height / self.meters_to_pixel) - (self.size[1] / self.meters_to_pixel)
-
-        print("max x: ")
-        print(max_x)
-        print("max y: ")
-        print(max_y)
 
         max_x = max(0, max_x)
         max_y = max(0, max_y)
