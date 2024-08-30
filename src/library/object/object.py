@@ -7,12 +7,12 @@ class Object:
         self.size = [0, 0]
         self._speed = Vector(0, 0)
         self.position = Vector(0, 0)
-        self.meters_to_pixel = 10
+        self.meters_to_pixel = 20
 
 
     def physics_process(self, delta_time: float, screen_width: int, screen_height: int) -> None:
-        max_x = (screen_width / self.meters_to_pixel) - (self.size[0] / 10)
-        max_y = (screen_height / self.meters_to_pixel) - (self.size[1] / 10)
+        max_x = (screen_width / self.meters_to_pixel) - (self.size[0] / self.meters_to_pixel)
+        max_y = (screen_height / self.meters_to_pixel) - (self.size[1] / self.meters_to_pixel)
 
         print("max x: ")
         print(max_x)
@@ -28,7 +28,7 @@ class Object:
         self.position.x = max(0, min(self.position.x, max_x))
         self.position.y = max(0, min(self.position.y, max_y))
 
-        #print(f"Posição X: {self.position.x}, Posição Y: {self.position.y}, Limite X: {max_x}, Limite Y: {max_y}")
+        print(f"Posição X: {self.position.x}, Posição Y: {self.position.y}, Limite X: {max_x}, Limite Y: {max_y}")
 
 
     def draw_object(self, screen) -> None:

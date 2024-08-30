@@ -17,12 +17,12 @@ class Game:
         self.setup = Setup()
         self.running = True
         self.screen = self.setup.screen
-        self.spaceship = Spaceship(self.screen, None)
+        self.spaceship = Spaceship(self.screen)
         self.objects = [self.spaceship]
         self.clock = self.pygame_engine.start_clock()
         self.delta_time = 0
         self.game_config_constants = GameConfigConstants()
-        self.enemy = Enemy(self.screen, None)
+        self.enemy = Enemy(self.screen)
         self.add_objects(self.enemy)
         
     def run_game(self):

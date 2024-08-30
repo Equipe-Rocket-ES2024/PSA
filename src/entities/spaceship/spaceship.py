@@ -11,7 +11,7 @@ import pygame
 
 class Spaceship(Object):
 
-    def __init__(self, screen: Surface, position: Vector) -> None:
+    def __init__(self, screen: Surface) -> None:
         super().__init__()
         self.game_config_constants = GameConfigConstants()
         self.pygame_engine = PygameEngine()
@@ -40,6 +40,7 @@ class Spaceship(Object):
                 self._speed.x = 0
             elif event.key in [pygame.K_DOWN, pygame.K_UP]:
                 self._speed.y = 0
+                
                 
     def physics_process(self, delta_time: float, screen_width: int, screen_height: int) -> None:
         super().physics_process(delta_time, screen_width, screen_height)

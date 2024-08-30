@@ -15,7 +15,7 @@ class Bullet(Object):
         self.game_config_constants = GameConfigConstants()
         self.pygame_engine = PygameEngine()
         self.screen: Surface = screen
-        starting_x = position.x + 1.7
+        starting_x = position.x + 1
         starting_y = position.y - self.size[1] - 1
         self.position = self.pygame_engine.default_position(starting_x, starting_y)
         self.size = [10, 10]
@@ -27,6 +27,7 @@ class Bullet(Object):
         )
         self.color = pygame.Color('white')
         self.hitbox = Hitbox(self, Vector(1, 1), Vector(0, 0))
+
 
     def move_object(self) -> None:
         self._speed.y = -self.bullet_speed_default

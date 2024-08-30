@@ -9,7 +9,7 @@ from src.library.constants.game_config_constants import GameConfigConstants
 
 class Enemy(Object):
 
-    def __init__(self, screen: Surface, position: Vector) -> None:
+    def __init__(self, screen: Surface) -> None:
         super().__init__()
         self.game_config_constants = GameConfigConstants()
         self.pygame_engine = PygameEngine()
