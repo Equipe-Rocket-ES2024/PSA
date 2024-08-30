@@ -1,7 +1,7 @@
 from src.library.vector.vector import Vector
 
 class Object:
-    
+
     def __init__(self):
         self.sprite: str = None
         self.size = [0, 0]

@@ -9,6 +9,7 @@ from src.library.object.object import Object
 from src.library.pygame.keys import Keys
 from src.library.constants.game_config_constants import GameConfigConstants
 
+
 class Game:
     
     def __init__(self):
@@ -24,9 +25,10 @@ class Game:
         self.game_config_constants = GameConfigConstants()
         self.enemy = Enemy(self.screen)
         self.add_objects(self.enemy)
+        self.enemy_spawn_interval = 2
+        self.time_since_last_spawn = 0
         
     def run_game(self):
-        
         while self.running:
             
             for event in pygame.event.get():
@@ -73,6 +75,11 @@ class Game:
                 obj.move_object()
                 
             self.handle_collision()
+            
+        self.time_since_last_spawn += delta_time
+        if self.time_since_last_spawn >= self.enemy_spawn_interval:
+            self.spawn_enemy()
+            self.time_since_last_spawn = 0
 
                 
     def render(self):
@@ -92,7 +99,7 @@ class Game:
                     obj1 = self.objects[i]
                     obj2 = self.objects[j]
                 if Hitbox.check_collision(obj1.hitbox, obj2.hitbox):
-                    if isinstance(obj1, Enemy) or isinstance(obj1, Bullet):
+                    if (isinstance(obj1, Enemy) and isinstance(obj2, Bullet)) or (isinstance(obj1, Bullet) and isinstance(obj2, Enemy)):
                         objects_remove.append(obj1)
                         objects_remove.append(obj2)
                         print("removi inimigo")
@@ -115,3 +122,8 @@ class Game:
                     objects_to_remove.append(obj)
         
         self.objects = list(filter(lambda x: x not in objects_to_remove, self.objects))
+
+
+    def spawn_enemy(self):
+        new_enemy = Enemy(self.screen)
+        self.add_objects(new_enemy)

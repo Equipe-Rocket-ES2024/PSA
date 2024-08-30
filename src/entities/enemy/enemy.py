@@ -14,7 +14,7 @@ class Enemy(Object):
         self.game_config_constants = GameConfigConstants()
         self.pygame_engine = PygameEngine()
         self.screen: Surface = screen
-        self.position = self.pygame_engine.default_position(35, 18)
+        self.position = self._generate_random_position()
         self.size = [50, 50]
         self._enemy_speed_default = 20
         self.sprite = self.pygame_engine.load_sprite_image(
@@ -27,6 +27,7 @@ class Enemy(Object):
         self._speed = Vector(0, 0)
         self.hitbox = Hitbox(self, Vector(1, 1), Vector(0, 0))
 
+
     def move_object(self, delta_time: float) -> None:
         self._move_timer += delta_time
 
@@ -34,6 +35,7 @@ class Enemy(Object):
             self._choose_new_direction()
             self._move_timer = 0
         
+
     def _choose_new_direction(self) -> None:
         self._speed.x = random.uniform(-self._enemy_speed_default,
                                        self._enemy_speed_default)
@@ -41,7 +43,15 @@ class Enemy(Object):
         self._speed.y = random.uniform(-self._enemy_speed_default,
                                        self._enemy_speed_default)
     
+
     def physics_process(self, delta_time: float, screen_width: int, screen_height: int) -> None:
         super().physics_process(delta_time, screen_width, screen_height)
         self.hitbox.update()
+
     
+    def _generate_random_position(self) -> Vector:
+        max_x = 40
+        max_y = 20
+        spawn_x = random.randint(0, max_x)
+        spawn_y = random.randint(0, max_y)
+        return Vector(spawn_x, spawn_y)
