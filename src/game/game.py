@@ -40,7 +40,7 @@ class Game:
                 elif event.type in [pygame.KEYDOWN, pygame.KEYUP]:
                     self.spaceship.move_object(event)
                     if event.type == pygame.KEYDOWN and event.key == Keys.K_SPACE.value:
-                        self.add_objects(Bullet(self.screen, self.spaceship.position))
+                        self.add_objects(self.spaceship.shoot())
                         
                 elif event.type == Keys.KEYDOWN.value:
                     if event.key == Keys.K_ESCAPE.value:
@@ -117,7 +117,7 @@ class Game:
         for obj in self.objects:
             if isinstance(obj, Bullet):
                 max_x = (self.setup.screen_width / obj.meters_to_pixel) - (obj.size[0] / obj.meters_to_pixel)
-                max_y = (self.setup.screen_height/ obj.meters_to_pixel) - (obj.size[1] / obj.meters_to_pixel)
+                max_y = (self.setup.screen_height / obj.meters_to_pixel) - (obj.size[1] / obj.meters_to_pixel)
                 if obj.position.y <= 0 or obj.position.x <= 0 or obj.position.y >= max_x or obj.position.x >= max_y:
                     objects_to_remove.append(obj)
         
