@@ -14,11 +14,6 @@ class Object:
         max_x = (screen_width / self.meters_to_pixel) - (self.size[0] / self.meters_to_pixel)
         max_y = (screen_height / self.meters_to_pixel) - (self.size[1] / self.meters_to_pixel)
 
-        print("max x: ")
-        print(max_x)
-        print("max y: ")
-        print(max_y)
-
         max_x = max(0, max_x)
         max_y = max(0, max_y)
 

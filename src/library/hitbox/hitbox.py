@@ -4,6 +4,7 @@ from src.library.vector.vector import Vector
 
 
 class Hitbox:
+    
     def __init__(self, object, scale: Vector, displacement: Vector):
         self.object = object
         self.displacement = copy.copy(displacement)

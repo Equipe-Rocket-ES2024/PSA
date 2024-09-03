@@ -9,6 +9,7 @@ from src.library.object.object import Object
 from src.library.pygame.keys import Keys
 from src.library.constants.game_config_constants import GameConfigConstants
 
+
 class Game:
     
     def __init__(self):
@@ -24,9 +25,10 @@ class Game:
         self.game_config_constants = GameConfigConstants()
         self.enemy = Enemy(self.screen)
         self.add_objects(self.enemy)
+        self.enemy_spawn_interval = 2
+        self.time_since_last_spawn = 0
         
     def run_game(self):
-        
         while self.running:
             
             for event in pygame.event.get():
@@ -51,11 +53,14 @@ class Game:
             self.delta_time = (self.clock.tick(60) / 1000)
             
             self.physics_process(self.delta_time)
+
+            self.remove_out_of_bounds_bullets()
             
             self.render()
 
         self.pygame_engine.display_init()
         
+
     def add_objects(self, object: Object) -> None:
         self.objects.append(object)
         
@@ -70,6 +75,11 @@ class Game:
                 obj.move_object()
                 
             self.handle_collision()
+            
+        self.time_since_last_spawn += delta_time
+        if self.time_since_last_spawn >= self.enemy_spawn_interval:
+            self.spawn_enemy()
+            self.time_since_last_spawn = 0
 
                 
     def render(self):
@@ -80,6 +90,7 @@ class Game:
 
         self.pygame_engine.display_flip()
         
+
     def handle_collision(self): 
         objects_remove = [];
         for i in range(len(self.objects)):
@@ -88,7 +99,7 @@ class Game:
                     obj1 = self.objects[i]
                     obj2 = self.objects[j]
                 if Hitbox.check_collision(obj1.hitbox, obj2.hitbox):
-                    if isinstance(obj1, Enemy) or isinstance(obj1, Bullet):
+                    if (isinstance(obj1, Enemy) and isinstance(obj2, Bullet)) or (isinstance(obj1, Bullet) and isinstance(obj2, Enemy)):
                         objects_remove.append(obj1)
                         objects_remove.append(obj2)
                         print("removi inimigo")
@@ -98,3 +109,21 @@ class Game:
         
         self.objects = list(
             filter(lambda x: x not in objects_remove, self.objects))
+
+
+    def remove_out_of_bounds_bullets(self):
+        objects_to_remove = []
+        
+        for obj in self.objects:
+            if isinstance(obj, Bullet):
+                max_x = (self.setup.screen_width / obj.meters_to_pixel) - (obj.size[0] / obj.meters_to_pixel)
+                max_y = (self.setup.screen_height/ obj.meters_to_pixel) - (obj.size[1] / obj.meters_to_pixel)
+                if obj.position.y <= 0 or obj.position.x <= 0 or obj.position.y >= max_x or obj.position.x >= max_y:
+                    objects_to_remove.append(obj)
+        
+        self.objects = list(filter(lambda x: x not in objects_to_remove, self.objects))
+
+
+    def spawn_enemy(self):
+        new_enemy = Enemy(self.screen)
+        self.add_objects(new_enemy)
