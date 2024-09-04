@@ -4,6 +4,7 @@ from src.library.hitbox.hitbox import Hitbox
 from src.library.object.object import Object
 from src.library.pygame.pygame import PygameEngine
 from src.library.vector.vector import Vector
+from src.entities.bullet.bullet import Bullet
 from src.library.constants.game_config_constants import GameConfigConstants
 
 
@@ -55,3 +56,6 @@ class Enemy(Object):
         spawn_x = random.randint(0, max_x)
         spawn_y = random.randint(0, max_y)
         return Vector(spawn_x, spawn_y)
+    
+    def shoot(self) -> Bullet:
+        return Bullet(self.screen, self.position.x + 1, self.position.y + 3, 30)

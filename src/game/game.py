@@ -102,7 +102,6 @@ class Game:
                     if (isinstance(obj1, Enemy) and isinstance(obj2, Bullet)) or (isinstance(obj1, Bullet) and isinstance(obj2, Enemy)):
                         objects_remove.append(obj1)
                         objects_remove.append(obj2)
-                        print("removi inimigo")
                     
                     print(
                         f"Collision detected between {type(obj1).__name__} and {type(obj2).__name__}")
@@ -127,3 +126,4 @@ class Game:
     def spawn_enemy(self):
         new_enemy = Enemy(self.screen)
         self.add_objects(new_enemy)
+        self.add_objects(new_enemy.shoot())

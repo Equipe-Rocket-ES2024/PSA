@@ -47,8 +47,7 @@ class Spaceship(Object):
         super().physics_process(delta_time, screen_width, screen_height)
         self.hitbox.update()
         
-        
     def shoot(self) -> Bullet:
-        return Bullet(self.screen, self.position)
+        return Bullet(self.screen, self.position.x + 1, self.position.y - 1, -30)
 
     
