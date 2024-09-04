@@ -64,22 +64,26 @@ class Game:
     def add_objects(self, object: Object) -> None:
         self.objects.append(object)
         
-
-    def physics_process(self, delta_time: float) -> None:        
+    def physics_process(self, delta_time: float) -> None:
         for obj in self.objects:
-            obj.physics_process(delta_time, self.screen.get_width(), self.screen.get_height())
-            
+            obj.physics_process(
+                delta_time, self.screen.get_width(), self.screen.get_height())
+
             if isinstance(obj, Enemy):
                 obj.move_object(self.delta_time)
+                bullet = obj.update(delta_time)
+                if bullet:
+                    self.add_objects(bullet)
             elif isinstance(obj, Bullet):
                 obj.move_object()
-                
+
             self.handle_collision()
-            
+
         self.time_since_last_spawn += delta_time
         if self.time_since_last_spawn >= self.enemy_spawn_interval:
             self.spawn_enemy()
             self.time_since_last_spawn = 0
+
 
                 
     def render(self):
@@ -102,6 +106,9 @@ class Game:
                     if (isinstance(obj1, Enemy) and isinstance(obj2, Bullet)) or (isinstance(obj1, Bullet) and isinstance(obj2, Enemy)):
                         objects_remove.append(obj1)
                         objects_remove.append(obj2)
+                    if (isinstance(obj1, Spaceship) and isinstance(obj2, Bullet)) or (isinstance(obj1, Bullet) and isinstance(obj2, Spaceship)):
+                        objects_remove.append(obj1)
+                        objects_remove.append(obj2)
                     
                     print(
                         f"Collision detected between {type(obj1).__name__} and {type(obj2).__name__}")
@@ -122,8 +129,9 @@ class Game:
         
         self.objects = list(filter(lambda x: x not in objects_to_remove, self.objects))
 
-
     def spawn_enemy(self):
         new_enemy = Enemy(self.screen)
         self.add_objects(new_enemy)
-        self.add_objects(new_enemy.shoot())
+
+        bullet = new_enemy.shoot()
+        self.add_objects(bullet)
