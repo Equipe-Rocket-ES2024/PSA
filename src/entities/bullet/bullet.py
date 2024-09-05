@@ -10,13 +10,13 @@ import pygame
 
 class Bullet(Object):
 
-    def __init__(self, screen: Surface, positionX: int, positionY: int, speed_bullet: float) -> None:
+    def __init__(self, screen: Surface, position: Vector, speed_bullet: float) -> None:
         super().__init__()
         self.game_config_constants = GameConfigConstants()
         self.pygame_engine = PygameEngine()
         self.screen: Surface = screen
-        starting_x = positionX
-        starting_y = positionY - self.size[1] 
+        starting_x = position.x
+        starting_y = position.y - self.size[1]
         self.position = self.pygame_engine.default_position(starting_x, starting_y)
         self.size = [10, 10]
         self.bullet_speed_default = speed_bullet

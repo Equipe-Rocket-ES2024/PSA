@@ -27,6 +27,16 @@ class Game:
         self.add_objects(self.enemy)
         self.enemy_spawn_interval = 2
         self.time_since_last_spawn = 0
+        self.score = 0
+        pygame.font.init()
+        self.font = pygame.font.Font(None, 36)
+        self.lives = 3
+        self.heart_sprite = self.pygame_engine.load_sprite_image(
+            self.game_config_constants.HEART_01)
+        self.heart_sprite = self.pygame_engine.scale_sprite(
+            self.heart_sprite, 40, 40
+        )
+        
         
     def run_game(self):
         while self.running:
@@ -40,7 +50,10 @@ class Game:
                 elif event.type in [pygame.KEYDOWN, pygame.KEYUP]:
                     self.spaceship.move_object(event)
                     if event.type == pygame.KEYDOWN and event.key == Keys.K_SPACE.value:
-                        self.add_objects(self.spaceship.shoot())
+                        spaceshipAliveList = list(
+                            filter(self.spaceshipAlive, self.objects))
+                        if (spaceshipAliveList.__len__() > 0):
+                            self.add_objects(self.spaceship.shoot())
                         
                 elif event.type == Keys.KEYDOWN.value:
                     if event.key == Keys.K_ESCAPE.value:
@@ -64,32 +77,42 @@ class Game:
     def add_objects(self, object: Object) -> None:
         self.objects.append(object)
         
-
-    def physics_process(self, delta_time: float) -> None:        
+        
+    def physics_process(self, delta_time: float) -> None:
         for obj in self.objects:
-            obj.physics_process(delta_time, self.screen.get_width(), self.screen.get_height())
-            
+            obj.physics_process(
+                delta_time, self.screen.get_width(), self.screen.get_height())
+
             if isinstance(obj, Enemy):
                 obj.move_object(self.delta_time)
+                bullet = obj.update(delta_time)
+                if bullet:
+                    self.add_objects(bullet)
             elif isinstance(obj, Bullet):
                 obj.move_object()
-                
+
             self.handle_collision()
-            
+
         self.time_since_last_spawn += delta_time
         if self.time_since_last_spawn >= self.enemy_spawn_interval:
             self.spawn_enemy()
             self.time_since_last_spawn = 0
 
-                
+
     def render(self):
         self.screen.fill(self.game_config_constants.GAME_BACKGROUND_COLOR)
 
         for object in self.objects:
             object.draw_object(self.screen)
 
-        self.pygame_engine.display_flip()
+        score_text = self.font.render(f"Score: {self.score}", True, (255, 255, 255))
+        self.screen.blit(score_text, (10, 10))
         
+        for i in range(self.lives):
+            self.screen.blit(self.heart_sprite, (10 + i * 40, 50))
+
+        self.pygame_engine.display_flip()
+
 
     def handle_collision(self): 
         objects_remove = [];
@@ -102,9 +125,13 @@ class Game:
                     if (isinstance(obj1, Enemy) and isinstance(obj2, Bullet)) or (isinstance(obj1, Bullet) and isinstance(obj2, Enemy)):
                         objects_remove.append(obj1)
                         objects_remove.append(obj2)
+                        self.score += 1
+                    if (isinstance(obj1, Spaceship) and isinstance(obj2, Bullet)) or (isinstance(obj1, Bullet) and isinstance(obj2, Spaceship)):
+                        objects_remove.append(obj2)
+                        self.lives -= 1
+                        if self.lives <= 0:
+                            self.running = False
                     
-                    print(
-                        f"Collision detected between {type(obj1).__name__} and {type(obj2).__name__}")
         
         self.objects = list(
             filter(lambda x: x not in objects_remove, self.objects))
@@ -126,4 +153,7 @@ class Game:
     def spawn_enemy(self):
         new_enemy = Enemy(self.screen)
         self.add_objects(new_enemy)
-        self.add_objects(new_enemy.shoot())
+
+        
+    def spaceshipAlive(self, obj):
+        return isinstance(obj, Spaceship)

@@ -27,6 +27,8 @@ class Enemy(Object):
         self._move_interval = 0.5
         self._speed = Vector(0, 0)
         self.hitbox = Hitbox(self, Vector(1, 1), Vector(0, 0))
+        self.shoot_interval = 1.5
+        self.time_since_last_shot = 0
 
 
     def move_object(self, delta_time: float) -> None:
@@ -57,5 +59,15 @@ class Enemy(Object):
         spawn_y = random.randint(0, max_y)
         return Vector(spawn_x, spawn_y)
     
+    
     def shoot(self) -> Bullet:
-        return Bullet(self.screen, self.position.x + 1, self.position.y + 3, 30)
+        position = Vector(self.position.x + 1, self.position.y + 3)
+        return Bullet(self.screen, position, 30)
+    
+    
+    def update(self, delta_time):
+        self.time_since_last_shot += delta_time
+        if self.time_since_last_shot >= self.shoot_interval:
+            self.time_since_last_shot = 0
+            return self.shoot()
+        return None
