@@ -61,7 +61,9 @@ class Enemy(Object):
     
     
     def shoot(self) -> Bullet:
-        return Bullet(self.screen, self.position.x + 1, self.position.y + 3, 30)
+        position = Vector(self.position.x + 1, self.position.y + 3)
+        return Bullet(self.screen, position, 30)
+    
     
     def update(self, delta_time):
         self.time_since_last_shot += delta_time

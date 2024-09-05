@@ -27,6 +27,8 @@ class Game:
         self.add_objects(self.enemy)
         self.enemy_spawn_interval = 2
         self.time_since_last_spawn = 0
+        self.score = 0
+        
         
     def run_game(self):
         while self.running:
@@ -40,7 +42,10 @@ class Game:
                 elif event.type in [pygame.KEYDOWN, pygame.KEYUP]:
                     self.spaceship.move_object(event)
                     if event.type == pygame.KEYDOWN and event.key == Keys.K_SPACE.value:
-                        self.add_objects(self.spaceship.shoot())
+                        spaceshipAliveList = list(
+                            filter(self.spaceshipAlive, self.objects))
+                        if (spaceshipAliveList.__len__() > 0):
+                            self.add_objects(self.spaceship.shoot())
                         
                 elif event.type == Keys.KEYDOWN.value:
                     if event.key == Keys.K_ESCAPE.value:
@@ -106,12 +111,12 @@ class Game:
                     if (isinstance(obj1, Enemy) and isinstance(obj2, Bullet)) or (isinstance(obj1, Bullet) and isinstance(obj2, Enemy)):
                         objects_remove.append(obj1)
                         objects_remove.append(obj2)
+                        self.score += 1
+                        print('Inimigos abatidos: ', self.score)
                     if (isinstance(obj1, Spaceship) and isinstance(obj2, Bullet)) or (isinstance(obj1, Bullet) and isinstance(obj2, Spaceship)):
                         objects_remove.append(obj1)
                         objects_remove.append(obj2)
                     
-                    print(
-                        f"Collision detected between {type(obj1).__name__} and {type(obj2).__name__}")
         
         self.objects = list(
             filter(lambda x: x not in objects_remove, self.objects))
@@ -129,9 +134,13 @@ class Game:
         
         self.objects = list(filter(lambda x: x not in objects_to_remove, self.objects))
 
+
     def spawn_enemy(self):
         new_enemy = Enemy(self.screen)
         self.add_objects(new_enemy)
 
         bullet = new_enemy.shoot()
         self.add_objects(bullet)
+        
+    def spaceshipAlive(self, obj):
+        return isinstance(obj, Spaceship)

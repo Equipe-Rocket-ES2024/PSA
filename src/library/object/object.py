@@ -23,8 +23,6 @@ class Object:
         self.position.x = max(0, min(self.position.x, max_x))
         self.position.y = max(0, min(self.position.y, max_y))
 
-        print(f"Posição X: {self.position.x}, Posição Y: {self.position.y}, Limite X: {max_x}, Limite Y: {max_y}")
-
 
     def draw_object(self, screen) -> None:
         screen.blit(self.sprite, (self.position.x *
