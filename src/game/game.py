@@ -31,11 +31,8 @@ class Game:
         pygame.font.init()
         self.font = pygame.font.Font(None, 36)
         self.lives = 3
-        self.heart_sprite = self.pygame_engine.load_sprite_image(
-            self.game_config_constants.HEART_01)
-        self.heart_sprite = self.pygame_engine.scale_sprite(
-            self.heart_sprite, 40, 40
-        )
+        self.heart_sprite = self.pygame_engine.load_sprite_image(self.game_config_constants.HEART_01)
+        self.heart_sprite = self.pygame_engine.scale_sprite(self.heart_sprite, 40, 30)
         
         
     def run_game(self):
