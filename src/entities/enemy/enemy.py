@@ -51,18 +51,32 @@ class Enemy(Object):
         self.update_sprite()
 
     def update_sprite(self) -> None:
-        if self._speed.x > 0:
+        if self._speed.x > 0 and self._speed.y == 0:
             self.sprite = self.sprites[0]  # direita
-        if self._speed.x < 0:
+        elif self._speed.x < 0 and self._speed.y == 0:
             self.sprite = self.sprites[1]  # esquerda
-        if self._speed.y > 0:
+        elif self._speed.y > 0 and self._speed.x == 0:
             self.sprite = self.sprites[2]  # baixo
-        if self._speed.y < 0:
+        elif self._speed.y < 0 and self._speed.x == 0:
             self.sprite = self.sprites[3]  # cima
+        elif self._speed.x > 0 and self._speed.y > 0:
+            # Movimento diagonal para baixo-direita
+            # Aqui você pode escolher um sprite que represente essa direção diagonal
+            self.sprite = self.sprites[2]  # Por exemplo, usando o sprite de movimento para baixo
+        elif self._speed.x > 0 and self._speed.y < 0:
+            # Movimento diagonal para cima-direita
+            self.sprite = self.sprites[0]  # Usando o sprite de movimento para a direita
+        elif self._speed.x < 0 and self._speed.y > 0:
+            # Movimento diagonal para baixo-esquerda
+            self.sprite = self.sprites[2]  # Usando o sprite de movimento para baixo
+        elif self._speed.x < 0 and self._speed.y < 0:
+            # Movimento diagonal para cima-esquerda
+            self.sprite = self.sprites[3]  # Usando o sprite de movimento para cima
 
         self.sprite = self.pygame_engine.scale_sprite(
             self.sprite, self.size[0], self.size[1]
         )
+
 
     def physics_process(self, delta_time: float, screen_width: int, screen_height: int) -> None:
         super().physics_process(delta_time, screen_width, screen_height)
