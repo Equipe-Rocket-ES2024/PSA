@@ -1,6 +1,10 @@
 class GameConfigConstants:
     GAME_BACKGROUND_COLOR = "black"
-    PLAYER_SPACESHIP_SPRITE = "src/assets/sprites/player_spaceship.png"
+    PLAYER_SPACESHIP_SPRITE_TOP = "src/assets/sprites/player_spaceship_top.png"
+    PLAYER_SPACESHIP_SPRITE_BOTTOM = "src/assets/sprites/player_spaceship_bottom.png"
+    PLAYER_SPACESHIP_SPRITE_LEFT = "src/assets/sprites/player_spaceship_left.png"
+    PLAYER_SPACESHIP_SPRITE_RIGHT = "src/assets/sprites/player_spaceship_right.png"
     ENEMY_SPACESHIP_SPRITE = "src/assets/sprites/enemy_spaceship.png"
     BULLET_SPRITE = "src/assets/sprites/bullet.png"
     HEART_01 = "src/assets/sprites/vidas_0.png"
+    EXPLOSION = "src/assets/sprites/explosion.png"
