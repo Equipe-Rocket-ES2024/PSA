@@ -1,5 +1,4 @@
 import pygame
-import time
 from src.entities.enemy.enemy import Enemy
 from src.entities.bullet.bullet import Bullet
 from src.entities.spaceship.spaceship import Spaceship
@@ -25,7 +24,7 @@ class Game:
         self.delta_time = 0
         self.game_config_constants = GameConfigConstants()
         self.enemy = Enemy(self.screen)
-        # self.add_objects(self.enemy)
+        self.add_objects(self.enemy)
         self.enemy_spawn_interval = 2
         self.time_since_last_spawn = 0
         self.score = 0
@@ -93,7 +92,7 @@ class Game:
 
         self.time_since_last_spawn += delta_time
         if self.time_since_last_spawn >= self.enemy_spawn_interval:
-            # elf.spawn_enemy()
+            self.spawn_enemy()
             self.time_since_last_spawn = 0
 
 
