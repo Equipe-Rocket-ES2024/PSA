@@ -11,7 +11,7 @@ from src.library.constants.game_config_constants import GameConfigConstants
 
 
 class Game:
-    
+
     def __init__(self):
         self.pygame_engine = PygameEngine()
         self.pygame_engine.display_init()
@@ -31,27 +31,72 @@ class Game:
         pygame.font.init()
         self.font = pygame.font.Font(None, 36)
         self.lives = 3
-        self.heart_sprite = self.pygame_engine.load_sprite_image(self.game_config_constants.HEART_01)
-        self.heart_sprite = self.pygame_engine.scale_sprite(self.heart_sprite, 40, 30)
-        
-        
+        self.heart_sprite = self.pygame_engine.load_sprite_image(
+            self.game_config_constants.HEART_01)
+        self.heart_sprite = self.pygame_engine.scale_sprite(
+            self.heart_sprite, 40, 30)
+
+    def draw_button(self, text, x, y, width, height, inactive_color, active_color, action=None):
+        """Desenha um botão na tela e detecta cliques."""
+        mouse = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()
+
+        # Detectar o hover sobre o botão
+        if x + width > mouse[0] > x and y + height > mouse[1] > y:
+            pygame.draw.rect(self.screen, active_color, (x, y, width, height))
+            if click[0] == 1 and action is not None:
+                action()
+        else:
+            pygame.draw.rect(self.screen, inactive_color,
+                             (x, y, width, height))
+
+        # Renderizar o texto dentro do botão
+        text_surface = self.font.render(text, True, (0, 0, 0))
+        text_rect = text_surface.get_rect(
+            center=(x + width / 2, y + height / 2))
+        self.screen.blit(text_surface, text_rect)
+
+    def menu_screen(self):
+        """Exibe a tela de menu com um botão Start."""
+        menu_running = True
+        while menu_running:
+            for event in pygame.event.get():
+                if event.type == Keys.QUIT.value:
+                    self.running = False
+                    self.pygame_engine.display_quit()
+                    menu_running = False
+                    break
+
+            # Preencher o fundo do menu com uma cor
+            self.screen.fill((0, 0, 0))
+
+            # Desenhar o botão "Start"
+            self.draw_button("Start", 300, 250, 200, 80,
+                             (0, 0, 255), (0, 100, 255), self.start_game)
+
+            pygame.display.update()
+
+    def start_game(self):
+        """Função chamada quando o botão Start é clicado."""
+        self.run_game()
+
     def run_game(self):
+        """Loop principal do jogo."""
         while self.running:
-            
             for event in pygame.event.get():
                 if event.type == Keys.QUIT.value:
                     self.running = False
                     self.pygame_engine.display_quit()
                     break
-                
+
                 elif event.type in [pygame.KEYDOWN, pygame.KEYUP]:
                     self.spaceship.move_object(event)
                     if event.type == pygame.KEYDOWN and event.key == Keys.K_SPACE.value:
                         spaceshipAliveList = list(
                             filter(self.spaceshipAlive, self.objects))
-                        if (spaceshipAliveList.__len__() > 0):
+                        if spaceshipAliveList.__len__() > 0:
                             self.add_objects(self.spaceship.shoot())
-                        
+
                 elif event.type == Keys.KEYDOWN.value:
                     if event.key == Keys.K_ESCAPE.value:
                         self.running = False
@@ -59,13 +104,13 @@ class Game:
 
             if self.running == False:
                 break
-                             
+
             self.delta_time = (self.clock.tick(60) / 1000)
-            
+
             self.physics_process(self.delta_time)
 
             self.remove_out_of_bounds_bullets()
-            
+
             self.render()
 
         self.pygame_engine.display_init()
