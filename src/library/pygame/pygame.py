@@ -28,6 +28,9 @@ class PygameEngine(Engine):
     def default_position(self, pos_x: float, pos_y: float) -> Vector:
         return Vector(pos_x, pos_y)
     
+    def font_init(self) -> None:
+        return pygame.font.init()
+    
     def create_rect(
         self, 
         pos_x: float, 

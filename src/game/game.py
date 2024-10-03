@@ -8,7 +8,8 @@ from src.library.pygame.pygame import PygameEngine
 from src.library.object.object import Object
 from src.library.pygame.keys import Keys
 from src.library.constants.game_config_constants import GameConfigConstants
-
+from src.library.constants.spaceship_constants import SpaceshipConstants
+from src.library.constants.scenario_constants import ScenarioConstants
 
 class Game:
     
@@ -28,10 +29,10 @@ class Game:
         self.enemy_spawn_interval = 2
         self.time_since_last_spawn = 0
         self.score = 0
-        pygame.font.init()
+        self.pygame_engine.font_init()
         self.font = pygame.font.Font(None, 36)
         self.lives = 3
-        self.heart_sprite = self.pygame_engine.load_sprite_image(self.game_config_constants.HEART_01)
+        self.heart_sprite = self.pygame_engine.load_sprite_image(ScenarioConstants.HEART_01)
         self.heart_sprite = self.pygame_engine.scale_sprite(self.heart_sprite, 40, 30)
         
         
@@ -85,8 +86,6 @@ class Game:
                 bullet = obj.update(delta_time)
                 if bullet:
                     self.add_objects(bullet)
-            elif isinstance(obj, Bullet):
-                obj.move_object()
 
             self.handle_collision()
 
@@ -102,7 +101,7 @@ class Game:
         for object in self.objects:
             object.draw_object(self.screen)
 
-        score_text = self.font.render(f"Score: {self.score}", True, (255, 255, 255))
+        score_text = self.font.render(f"{self.game_config_constants.SCORE_LABEL}: {self.score}", True, (255, 255, 255))
         self.screen.blit(score_text, (10, 10))
         
         for i in range(self.lives):
@@ -125,9 +124,9 @@ class Game:
                         self.score += 1
                     if (isinstance(obj1, Spaceship) and isinstance(obj2, Bullet)) or (isinstance(obj1, Bullet) and isinstance(obj2, Spaceship)):
                         if isinstance(obj1, Spaceship):
-                            obj1.explosion(self.game_config_constants.EXPLOSION)
+                            obj1.explosion(SpaceshipConstants.SPACESHIP_EXPLOSION)
                         elif isinstance(obj2, Spaceship):
-                            obj2.explosion(self.game_config_constants.EXPLOSION)
+                            obj2.explosion(SpaceshipConstants.SPACESHIP_EXPLOSION)
                         self.lives -= 1
                         objects_remove.append(obj2)
                         if self.lives <= 0:

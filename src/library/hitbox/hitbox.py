@@ -1,5 +1,5 @@
 from src.library.pygame.pygame import PygameEngine
-import copy
+from copy import copy
 from src.library.vector.vector import Vector
 
 
@@ -7,7 +7,7 @@ class Hitbox:
     
     def __init__(self, object, scale: Vector, displacement: Vector):
         self.object = object
-        self.displacement = copy.copy(displacement)
+        self.displacement = copy(displacement)
         self.width = object.size[0] * scale.x
         self.height = object.size[1] * scale.y
         self.pygame_engine = PygameEngine()
