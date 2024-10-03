@@ -10,6 +10,7 @@ from src.library.pygame.keys import Keys
 from src.library.constants.game_config_constants import GameConfigConstants
 from src.library.constants.spaceship_constants import SpaceshipConstants
 from src.library.constants.scenario_constants import ScenarioConstants
+import itertools
 
 class Game:
     
@@ -101,40 +102,83 @@ class Game:
         for object in self.objects:
             object.draw_object(self.screen)
 
-        score_text = self.font.render(f"{self.game_config_constants.SCORE_LABEL}: {self.score}", True, (255, 255, 255))
+        score_text = self.font.render(
+            f"{self.game_config_constants.SCORE_LABEL}: {self.score}", 
+            True, 
+            (255, 255, 255)
+        )
         self.screen.blit(score_text, (10, 10))
         
-        for i in range(self.lives):
-            self.screen.blit(self.heart_sprite, (10 + i * 40, 50))
+        self.draw_hearts()
 
         self.pygame_engine.display_flip()
-
-
-    def handle_collision(self): 
-        objects_remove = [];
-        for i in range(len(self.objects)):
-            for j in range(i + 1, len(self.objects)):
-                if self.objects and len(self.objects) > 0:
-                    obj1 = self.objects[i]
-                    obj2 = self.objects[j]
-                if Hitbox.check_collision(obj1.hitbox, obj2.hitbox):
-                    if (isinstance(obj1, Enemy) and isinstance(obj2, Bullet)) or (isinstance(obj1, Bullet) and isinstance(obj2, Enemy)):
-                        objects_remove.append(obj1)
-                        objects_remove.append(obj2)
-                        self.score += 1
-                    if (isinstance(obj1, Spaceship) and isinstance(obj2, Bullet)) or (isinstance(obj1, Bullet) and isinstance(obj2, Spaceship)):
-                        if isinstance(obj1, Spaceship):
-                            obj1.explosion(SpaceshipConstants.SPACESHIP_EXPLOSION)
-                        elif isinstance(obj2, Spaceship):
-                            obj2.explosion(SpaceshipConstants.SPACESHIP_EXPLOSION)
-                        self.lives -= 1
-                        objects_remove.append(obj2)
-                        if self.lives <= 0:
-                            self.running = False
-                    
         
-        self.objects = list(
-            filter(lambda x: x not in objects_remove, self.objects))
+
+    def draw_hearts(self) -> None:
+        heart_spacing = 40
+        position_x = 10
+        position_y = 50
+        for i in range(self.lives):
+            x_position = position_x + i * heart_spacing
+            self.screen.blit(
+                self.heart_sprite, 
+                (x_position, position_y)
+            )
+
+
+    def handle_collision(self):
+        objects_remove = set()
+
+        for obj1, obj2 in itertools.combinations(self.objects, 2):
+            if Hitbox.check_collision(obj1.hitbox, obj2.hitbox):
+                self.handle_enemy_bullet_collision(obj1, obj2, objects_remove)
+                self.handle_spaceship_bullet_collision(obj1, obj2, objects_remove)
+                self.handle_enemy_spaceship_collision(obj1, obj2, objects_remove)
+
+        self.remove_objects(objects_remove)
+
+
+    def handle_enemy_bullet_collision(self, obj1, obj2, objects_remove):
+        if isinstance(obj1, Enemy) and isinstance(obj2, Bullet):
+            objects_remove.update([obj1, obj2])
+            self.score += 1
+        elif isinstance(obj1, Bullet) and isinstance(obj2, Enemy):
+            objects_remove.update([obj1, obj2])
+            self.score += 1
+
+
+    def handle_spaceship_bullet_collision(self, obj1, obj2, objects_remove):
+        if isinstance(obj1, Spaceship) and isinstance(obj2, Bullet):
+            obj1.explosion(SpaceshipConstants.SPACESHIP_EXPLOSION)
+            self.lives -= 1
+            objects_remove.add(obj2)
+            if self.lives <= 0:
+                self.running = False
+        elif isinstance(obj1, Bullet) and isinstance(obj2, Spaceship):
+            obj2.explosion(SpaceshipConstants.SPACESHIP_EXPLOSION)
+            self.lives -= 1
+            objects_remove.add(obj1)
+            if self.lives <= 0:
+                self.running = False
+    
+    
+    def handle_enemy_spaceship_collision(self, obj1, obj2, objects_remove):
+        if isinstance(obj1, Spaceship) and isinstance(obj2, Enemy):
+            obj1.explosion(SpaceshipConstants.SPACESHIP_EXPLOSION)
+            self.lives -= 1
+            objects_remove.add(obj2)
+            if self.lives <= 0:
+                self.running = False
+        elif isinstance(obj1, Enemy) and isinstance(obj2, Spaceship):
+            obj2.explosion(SpaceshipConstants.SPACESHIP_EXPLOSION)
+            self.lives -= 1
+            objects_remove.add(obj1)
+            if self.lives <= 0:
+                self.running = False
+            
+
+    def remove_objects(self, objects_remove):
+        self.objects = [obj for obj in self.objects if obj not in objects_remove]
 
 
     def remove_out_of_bounds_bullets(self):
