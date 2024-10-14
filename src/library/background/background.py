@@ -26,6 +26,6 @@ class Background:
             self.image, 
             (0, self.y_pos - self.screen.get_height())
         )
-        print(self.y_pos)
+        
         if self.y_pos < 0:
             self.screen.blit(self.image, (0, self.y_pos - self.screen.get_height()))
