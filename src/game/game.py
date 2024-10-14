@@ -3,6 +3,7 @@ from src.entities.enemy.enemy import Enemy
 from src.entities.bullet.bullet import Bullet
 from src.entities.spaceship.spaceship import Spaceship
 from src.config.setup import Setup
+from src.library.constants.enemy_constants import EnemyConstants
 from src.library.hitbox.hitbox import Hitbox
 from src.library.pygame.pygame import PygameEngine
 from src.library.object.object import Object
@@ -35,6 +36,7 @@ class Game:
         self.lives = 3
         self.heart_sprite = self.pygame_engine.load_sprite_image(ScenarioConstants.HEART_01)
         self.heart_sprite = self.pygame_engine.scale_sprite(self.heart_sprite, 40, 30)
+        self.enemies_pending_removal = []
         
         
     def run_game(self):
@@ -49,10 +51,7 @@ class Game:
                 elif event.type in [pygame.KEYDOWN, pygame.KEYUP]:
                     self.spaceship.move_object(event)
                     if event.type == pygame.KEYDOWN and event.key == Keys.K_SPACE.value:
-                        spaceshipAliveList = list(
-                            filter(self.spaceshipAlive, self.objects))
-                        if (spaceshipAliveList.__len__() > 0):
-                            self.add_objects(self.spaceship.shoot())
+                        self.add_objects(self.spaceship.shoot())
                         
                 elif event.type == Keys.KEYDOWN.value:
                     if event.key == Keys.K_ESCAPE.value:
@@ -65,7 +64,7 @@ class Game:
             self.delta_time = (self.clock.tick(60) / 1000)
             
             self.physics_process(self.delta_time)
-
+            self.update_enemy_removals()
             self.remove_out_of_bounds_bullets()
             
             self.render()
@@ -80,7 +79,10 @@ class Game:
     def physics_process(self, delta_time: float) -> None:
         for obj in self.objects:
             obj.physics_process(
-                delta_time, self.screen.get_width(), self.screen.get_height())
+                delta_time, 
+                self.screen.get_width(), 
+                self.screen.get_height()
+            )
 
             if isinstance(obj, Enemy):
                 obj.move_object(self.delta_time)
@@ -140,10 +142,16 @@ class Game:
 
     def handle_enemy_bullet_collision(self, obj1, obj2, objects_remove):
         if isinstance(obj1, Enemy) and isinstance(obj2, Bullet):
-            objects_remove.update([obj1, obj2])
+            self.schedule_enemy_removal(obj1)
+            obj1.explosion(EnemyConstants.ENEMY_EXPLOSION)
+            obj1.stop_movement()
             self.score += 1
+            objects_remove.add(obj2)
         elif isinstance(obj1, Bullet) and isinstance(obj2, Enemy):
-            objects_remove.update([obj1, obj2])
+            self.schedule_enemy_removal(obj1)
+            obj2.explosion(EnemyConstants.ENEMY_EXPLOSION)   
+            obj2.stop_movement()
+            objects_remove.add(obj1)         
             self.score += 1
 
 
@@ -197,7 +205,21 @@ class Game:
     def spawn_enemy(self):
         new_enemy = Enemy(self.screen)
         self.add_objects(new_enemy)
-
         
-    def spaceshipAlive(self, obj):
-        return isinstance(obj, Spaceship)
+    
+    def schedule_enemy_removal(self, enemy):
+        removal_time = self.pygame_engine.get_ticks() + 100
+        self.enemies_pending_removal.append((enemy, removal_time))
+
+
+    def update_enemy_removals(self):
+        current_time = self.pygame_engine.get_ticks()
+        enemies_to_remove = [
+            enemy for enemy, removal_time in self.enemies_pending_removal if current_time >= removal_time
+        ]
+  
+        self.objects = [obj for obj in self.objects if obj not in enemies_to_remove]
+        self.enemies_pending_removal = [
+            (enemy, removal_time) for enemy, removal_time in self.enemies_pending_removal
+            if enemy not in enemies_to_remove
+        ]

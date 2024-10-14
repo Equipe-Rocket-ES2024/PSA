@@ -35,6 +35,7 @@ class Enemy(Object):
         self.shoot_interval = 1.5
         self.time_since_last_shot = 0
 
+
     def move_object(self, delta_time: float) -> None:
         self._move_timer += delta_time
 
@@ -42,12 +43,18 @@ class Enemy(Object):
             self._choose_new_direction()
             self._move_timer = 0
 
+
     def _choose_new_direction(self) -> None:
-        self._speed.x = uniform(-self._enemy_speed_default,
-                                       self._enemy_speed_default)
-        self._speed.y = uniform(-self._enemy_speed_default,
-                                       self._enemy_speed_default)
+        self._speed.x = uniform(
+            -self._enemy_speed_default,
+            self._enemy_speed_default
+        )
+        self._speed.y = uniform(
+            -self._enemy_speed_default,
+            self._enemy_speed_default
+        )
         self.update_sprite()
+
 
     def update_sprite(self) -> None:
         if self._speed.x > 0 and self._speed.y == 0:
@@ -81,6 +88,7 @@ class Enemy(Object):
         super().physics_process(delta_time, screen_width, screen_height)
         self.hitbox.update()
 
+
     def _generate_random_position(self) -> Vector:
         max_x = 40
         max_y = 20
@@ -88,9 +96,11 @@ class Enemy(Object):
         spawn_y = randint(0, max_y)
         return Vector(spawn_x, spawn_y)
 
+
     def shoot(self) -> Bullet:
         position = Vector(self.position.x + 1, self.position.y + 3)
         return Bullet(self.screen, position, 30)
+
 
     def update(self, delta_time):
         self.time_since_last_shot += delta_time

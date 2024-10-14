@@ -37,4 +37,16 @@ class Object:
         sprite = self.get_current_sprite()
         if sprite:
             screen.blit(sprite, (self.position.x *
-                        self.meters_to_pixel, self.position.y * self.meters_to_pixel))
+                self.meters_to_pixel, self.position.y * self.meters_to_pixel)
+            )
+            
+    
+    def explosion(self, sprite: str):
+        self.sprite = self.pygame_engine.load_sprite_image(sprite)
+        self.sprite = self.pygame_engine.scale_sprite(
+            self.sprite, self.size[0], self.size[1]
+        )
+        
+        
+    def stop_movement(self) -> None:
+        self._speed = Vector(0, 0)

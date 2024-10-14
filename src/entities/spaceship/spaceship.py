@@ -89,10 +89,3 @@ class Spaceship(Object):
             speed_shoot.y = -scalar_speed  
 
         return Bullet(self.screen, position_shoot, speed_shoot)
-
-
-
-    def explosion(self, sprite):
-        self.sprite = self.pygame_engine.load_sprite_image(sprite)
-        self.sprite = self.pygame_engine.scale_sprite(
-            self.sprite, self.size[0], self.size[1])
