@@ -58,3 +58,11 @@ class Engine(ABC):
         height: int
     ) -> Surface:
         pass
+
+    @abstractmethod
+    def font_init(self) -> None:
+        pass
+    
+    @abstractmethod
+    def get_ticks(self) -> int:
+        pass
