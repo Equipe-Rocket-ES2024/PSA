@@ -36,7 +36,7 @@ class Enemy(Object):
         self.time_since_last_shot = 0
 
 
-    def move_object(self, delta_time: float) -> None:
+    def change_speed(self, delta_time: float) -> None:
         self._move_timer += delta_time
 
         if self._move_timer >= self._move_interval:

@@ -34,7 +34,7 @@ class Spaceship(Object):
         self.hitbox = Hitbox(self, Vector(1, 1), Vector(0, 0))
 
         
-    def move_object(self, event: pygame.event.EventType) -> None:
+    def change_speed(self, event: pygame.event.EventType) -> None:
         stop_speed = 0
         
         if event.type == pygame.KEYDOWN:
@@ -66,7 +66,22 @@ class Spaceship(Object):
         
         
     def shoot(self) -> Bullet:
-        position_shoot = Vector(self.position.x, self.position.y)
+        adjustment_position_x = None
+        adjustment_position_y = None
+        if self.direction_movimentation == DirectionMovimentationEnum.UP_SIDE.value:
+            adjustment_position_x = self.position.x + 1
+            adjustment_position_y = self.position.y + 2
+        elif self.direction_movimentation == DirectionMovimentationEnum.LEFT_SIDE.value:
+            adjustment_position_x = self.position.x + 2
+            adjustment_position_y = self.position.y + 1
+        elif self.direction_movimentation == DirectionMovimentationEnum.RIGHT_SIDE.value:
+            adjustment_position_x = self.position.x
+            adjustment_position_y = self.position.y + 1
+        elif self.direction_movimentation == DirectionMovimentationEnum.DOWN_SIDE.value:
+            adjustment_position_x = self.position.x + 1
+            adjustment_position_y = self.position.y
+        
+        position_shoot = Vector(adjustment_position_x, adjustment_position_y)
         speed_shoot = Vector(0, 0)
         scalar_speed = 30
         delta = 3

@@ -25,7 +25,7 @@ class Bullet(Object):
             self.sprite, self.size[0], self.size[1]
         )
         self._speed = copy(speed_bullet)
-        self.color = pygame.Color('white')
+        self.color = self.pygame_engine.color('white')
         self.hitbox = Hitbox(self, Vector(1, 1), Vector(0, 0))
         
     

@@ -3,6 +3,7 @@ from src.entities.enemy.enemy import Enemy
 from src.entities.bullet.bullet import Bullet
 from src.entities.spaceship.spaceship import Spaceship
 from src.config.setup import Setup
+from src.library.background.background import Background
 from src.library.constants.enemy_constants import EnemyConstants
 from src.library.hitbox.hitbox import Hitbox
 from src.library.pygame.pygame import PygameEngine
@@ -12,6 +13,8 @@ from src.library.constants.game_config_constants import GameConfigConstants
 from src.library.constants.spaceship_constants import SpaceshipConstants
 from src.library.constants.scenario_constants import ScenarioConstants
 import itertools
+
+from src.library.vector.vector import Vector
 
 class Game:
     
@@ -37,19 +40,25 @@ class Game:
         self.heart_sprite = self.pygame_engine.load_sprite_image(ScenarioConstants.HEART_01)
         self.heart_sprite = self.pygame_engine.scale_sprite(self.heart_sprite, 40, 30)
         self.enemies_pending_removal = []
+        self.background_game_list = [
+            Background(
+                ScenarioConstants.BACKGROUND_01, 
+                Vector(0, 3),
+                self.screen,
+            ),
+        ]
         
         
     def run_game(self):
-        while self.running:
-            
-            for event in pygame.event.get():
+        while self.running:            
+            for event in self.pygame_engine.get_events():
                 if event.type == Keys.QUIT.value:
                     self.running = False
                     self.pygame_engine.display_quit()
                     break
                 
                 elif event.type in [pygame.KEYDOWN, pygame.KEYUP]:
-                    self.spaceship.move_object(event)
+                    self.spaceship.change_speed(event)
                     if event.type == pygame.KEYDOWN and event.key == Keys.K_SPACE.value:
                         self.add_objects(self.spaceship.shoot())
                         
@@ -85,7 +94,7 @@ class Game:
             )
 
             if isinstance(obj, Enemy):
-                obj.move_object(self.delta_time)
+                obj.change_speed(self.delta_time)
                 bullet = obj.update(delta_time)
                 if bullet:
                     self.add_objects(bullet)
@@ -100,6 +109,7 @@ class Game:
 
     def render(self):
         self.screen.fill(self.game_config_constants.GAME_BACKGROUND_COLOR)
+        self.paralax()
 
         for object in self.objects:
             object.draw_object(self.screen)
@@ -112,7 +122,7 @@ class Game:
         self.screen.blit(score_text, (10, 10))
         
         self.draw_hearts()
-
+        
         self.pygame_engine.display_flip()
         
 
@@ -134,7 +144,6 @@ class Game:
         for obj1, obj2 in itertools.combinations(self.objects, 2):
             if Hitbox.check_collision(obj1.hitbox, obj2.hitbox):
                 self.handle_enemy_bullet_collision(obj1, obj2, objects_remove)
-                self.handle_spaceship_bullet_collision(obj1, obj2, objects_remove)
                 self.handle_enemy_spaceship_collision(obj1, obj2, objects_remove)
 
         self.remove_objects(objects_remove)
@@ -153,21 +162,6 @@ class Game:
             obj2.stop_movement()
             objects_remove.add(obj1)         
             self.score += 1
-
-
-    def handle_spaceship_bullet_collision(self, obj1, obj2, objects_remove):
-        if isinstance(obj1, Spaceship) and isinstance(obj2, Bullet):
-            obj1.explosion(SpaceshipConstants.SPACESHIP_EXPLOSION)
-            self.lives -= 1
-            objects_remove.add(obj2)
-            if self.lives <= 0:
-                self.running = False
-        elif isinstance(obj1, Bullet) and isinstance(obj2, Spaceship):
-            obj2.explosion(SpaceshipConstants.SPACESHIP_EXPLOSION)
-            self.lives -= 1
-            objects_remove.add(obj1)
-            if self.lives <= 0:
-                self.running = False
     
     
     def handle_enemy_spaceship_collision(self, obj1, obj2, objects_remove):
@@ -223,3 +217,9 @@ class Game:
             (enemy, removal_time) for enemy, removal_time in self.enemies_pending_removal
             if enemy not in enemies_to_remove
         ]
+        
+    
+    def paralax(self):
+        for background in self.background_game_list:
+            background.paralax()
+            background.draw()
