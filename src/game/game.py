@@ -67,8 +67,6 @@ class Game:
                         self.running = False
                         self.pygame_engine.display_quit()
 
-            if self.running == False:
-                break
                              
             self.delta_time = (self.clock.tick(60) / 1000)
             
@@ -77,7 +75,8 @@ class Game:
             self.remove_out_of_bounds_bullets()
             
             self.render()
-
+        
+        self.display_game_over()
         self.pygame_engine.display_init()
         
 
@@ -223,3 +222,65 @@ class Game:
         for background in self.background_game_list:
             background.paralax()
             background.draw()
+
+
+    def menu_inicial(self):
+        font_button = pygame.font.Font(None, 60)
+        font_title = pygame.font.Font(None, 100)
+        
+        start_text = font_button.render("Start", True, (255, 255, 255))
+        exit_text = font_button.render("Exit", True, (255, 255, 255))
+        
+        start_button_rect = pygame.Rect((self.screen.get_width() // 2 - 100, 300, 200, 80))
+        exit_button_rect = pygame.Rect((self.screen.get_width() // 2 - 100, 450, 200, 80))
+        
+        game_title_text = font_title.render("Star Wars X Star Treek", True, (255, 255, 0))
+        title_rect = game_title_text.get_rect(center=(self.screen.get_width() // 2, 100))
+        
+        menu_running = True
+        while menu_running:
+            self.screen.fill((0, 0, 0))
+
+            self.screen.blit(game_title_text, title_rect)
+
+            pygame.draw.rect(self.screen, (0, 0, 255), start_button_rect)
+            pygame.draw.rect(self.screen, (255, 0, 0), exit_button_rect)
+
+            self.screen.blit(start_text, (start_button_rect.x + 50, start_button_rect.y + 20))
+            self.screen.blit(exit_text, (exit_button_rect.x + 65, exit_button_rect.y + 20))
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    return False
+                
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if start_button_rect.collidepoint(event.pos):
+                        return True
+                    elif exit_button_rect.collidepoint(event.pos):
+                        return False
+
+            pygame.display.flip()
+                    
+    
+    def reset_game(self):
+        self.lives = 3
+        self.score = 0 
+        self.objects = [self.spaceship]
+        self.enemies_pending_removal = []
+        self.running = True
+
+
+    def display_game_over(self):
+        font = pygame.font.Font(None, 74)
+        game_over_text = font.render("GAME OVER", True, (255, 0, 0))
+        restart_text = font.render("Returning to Menu...", True, (255, 255, 255))
+
+        self.screen.fill((0, 0, 0))  # Limpa a tela
+        self.screen.blit(game_over_text, (self.screen.get_width() // 2 - game_over_text.get_width() // 2, 200))
+        self.screen.blit(restart_text, (self.screen.get_width() // 2 - restart_text.get_width() // 2, 300))
+
+        pygame.display.flip()
+        pygame.time.wait(2000)  # Espera 2 segundos antes de voltar ao menu
+        self.reset_game()
+        if self.menu_inicial():
+            self.run_game()
