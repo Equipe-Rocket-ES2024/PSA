@@ -38,8 +38,6 @@ class Game:
         self.pygame_engine.font_init()
         self.font = self.pygame_engine.get_font(value=36)
         self.lives = 3
-        # self.heart_sprite = self.pygame_engine.load_sprite_image(ScenarioConstants.HEART_00)
-        # self.heart_sprite = self.pygame_engine.scale_sprite(self.heart_sprite, 40, 30)
         heart_sprite_paths = [
             ScenarioConstants.HEART_00,
             ScenarioConstants.HEART_01,
@@ -158,26 +156,15 @@ class Game:
         
 
     def draw_hearts(self) -> None:
-        # heart_spacing = 40
-        # position_x = 10
-        # position_y = 50
-        # for i in range(self.lives):
-        #     x_position = position_x + i * heart_spacing
-        #     self.screen.blit(
-        #         self.heart_sprite, 
-        #         (x_position, position_y)
-        #     )
         heart_spacing = 40
         position_x = 10
         position_y = 50
 
-        # Atualize o índice da animação
         self.time_since_last_frame += self.delta_time
         if self.time_since_last_frame >= self.animation_speed:
             self.current_heart_frame = (self.current_heart_frame + 1) % len(self.heart_sprites)
             self.time_since_last_frame = 0
 
-        # Desenhe a imagem animada para cada vida
         for i in range(self.lives):
             x_position = position_x + i * heart_spacing
             self.screen.blit(self.heart_sprites[self.current_heart_frame], (x_position, position_y))
