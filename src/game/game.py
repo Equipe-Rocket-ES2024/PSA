@@ -38,8 +38,34 @@ class Game:
         self.pygame_engine.font_init()
         self.font = self.pygame_engine.get_font(value=36)
         self.lives = 3
-        self.heart_sprite = self.pygame_engine.load_sprite_image(ScenarioConstants.HEART_01)
-        self.heart_sprite = self.pygame_engine.scale_sprite(self.heart_sprite, 40, 30)
+        # self.heart_sprite = self.pygame_engine.load_sprite_image(ScenarioConstants.HEART_00)
+        # self.heart_sprite = self.pygame_engine.scale_sprite(self.heart_sprite, 40, 30)
+        heart_sprite_paths = [
+            ScenarioConstants.HEART_00,
+            ScenarioConstants.HEART_01,
+            ScenarioConstants.HEART_02,
+            ScenarioConstants.HEART_03,
+            ScenarioConstants.HEART_04,
+            ScenarioConstants.HEART_05,
+            ScenarioConstants.HEART_06,
+            ScenarioConstants.HEART_07,
+            ScenarioConstants.HEART_08,
+            ScenarioConstants.HEART_09,
+            ScenarioConstants.HEART_10,
+            ScenarioConstants.HEART_11,
+            ScenarioConstants.HEART_12,
+            ScenarioConstants.HEART_13
+        ]
+        
+        self.heart_sprites = [
+            self.pygame_engine.scale_sprite(self.pygame_engine.load_sprite_image(path), 40, 30)
+            for path in heart_sprite_paths
+        ]
+        
+        self.current_heart_frame = 0
+        self.animation_speed = 0.1
+        self.time_since_last_frame = 0
+        
         self.enemies_pending_removal = []
         self.background_game_list = [
             Background(
@@ -132,15 +158,29 @@ class Game:
         
 
     def draw_hearts(self) -> None:
+        # heart_spacing = 40
+        # position_x = 10
+        # position_y = 50
+        # for i in range(self.lives):
+        #     x_position = position_x + i * heart_spacing
+        #     self.screen.blit(
+        #         self.heart_sprite, 
+        #         (x_position, position_y)
+        #     )
         heart_spacing = 40
         position_x = 10
         position_y = 50
+
+        # Atualize o índice da animação
+        self.time_since_last_frame += self.delta_time
+        if self.time_since_last_frame >= self.animation_speed:
+            self.current_heart_frame = (self.current_heart_frame + 1) % len(self.heart_sprites)
+            self.time_since_last_frame = 0
+
+        # Desenhe a imagem animada para cada vida
         for i in range(self.lives):
             x_position = position_x + i * heart_spacing
-            self.screen.blit(
-                self.heart_sprite, 
-                (x_position, position_y)
-            )
+            self.screen.blit(self.heart_sprites[self.current_heart_frame], (x_position, position_y))
 
 
     def handle_collision(self):
