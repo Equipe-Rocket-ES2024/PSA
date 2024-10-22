@@ -5,6 +5,7 @@ from src.entities.spaceship.spaceship import Spaceship
 from src.config.setup import Setup
 from src.library.background.background import Background
 from src.library.constants.enemy_constants import EnemyConstants
+from src.library.constants.sounds_constants import SoundsConstants
 from src.library.hitbox.hitbox import Hitbox
 from src.library.pygame.pygame import PygameEngine
 from src.library.object.object import Object
@@ -47,6 +48,10 @@ class Game:
                 self.screen,
             ),
         ]
+        self.pygame_engine.mixer_init()
+        self.pygame_engine.mixer_music_load(SoundsConstants.BACKGROUND_MUSIC)
+        self.explosion_sound =self.pygame_engine.mixer_sound(SoundsConstants.EXPLOSION)
+        self.pygame_engine.mixer_music_play(-1)
         
         
     def run_game(self):
@@ -60,6 +65,7 @@ class Game:
                 elif event.type in [pygame.KEYDOWN, pygame.KEYUP]:
                     self.spaceship.change_speed(event)
                     if event.type == pygame.KEYDOWN and event.key == Keys.K_SPACE.value:
+                        self.spaceship.sounds.play()
                         self.add_objects(self.spaceship.shoot())
                         
                 elif event.type == Keys.KEYDOWN.value:
@@ -154,6 +160,7 @@ class Game:
             obj1.explosion(EnemyConstants.ENEMY_EXPLOSION)
             obj1.stop_movement()
             self.score += 1
+            self.explosion_sound.play()
             objects_remove.add(obj2)
         elif isinstance(obj1, Bullet) and isinstance(obj2, Enemy):
             self.schedule_enemy_removal(obj1)
@@ -161,18 +168,20 @@ class Game:
             obj2.stop_movement()
             objects_remove.add(obj1)         
             self.score += 1
-    
+            self.explosion_sound.play()  
     
     def handle_enemy_spaceship_collision(self, obj1, obj2, objects_remove):
         if isinstance(obj1, Spaceship) and isinstance(obj2, Enemy):
             obj1.explosion(SpaceshipConstants.SPACESHIP_EXPLOSION)
             self.lives -= 1
+            self.explosion_sound.play()
             objects_remove.add(obj2)
             if self.lives <= 0:
                 self.running = False
         elif isinstance(obj1, Enemy) and isinstance(obj2, Spaceship):
             obj2.explosion(SpaceshipConstants.SPACESHIP_EXPLOSION)
             self.lives -= 1
+            self.explosion_sound.play()
             objects_remove.add(obj1)
             if self.lives <= 0:
                 self.running = False

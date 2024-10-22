@@ -96,3 +96,23 @@ class Engine(ABC):
     @abstractmethod
     def wait(self, value: int) -> None:
         pass
+    
+    
+    @abstractmethod
+    def mixer_init(self) -> None:
+        pass
+    
+    
+    @abstractmethod
+    def mixer_music_load(self, path_music: str) -> None:
+        pass
+    
+    
+    @abstractmethod
+    def mixer_music_play(self, repeat_time: int) -> None:
+        pass
+    
+    
+    @abstractmethod
+    def mixer_sound(self, path_sound: str) -> None:
+        pass   

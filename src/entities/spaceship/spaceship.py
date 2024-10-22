@@ -1,4 +1,5 @@
 from pygame import Surface
+from src.library.constants.sounds_constants import SoundsConstants
 from src.library.hitbox.hitbox import Hitbox
 from src.library.sprite_manager.sprite_manager import SpriteManager
 from src.library.object.object import Object
@@ -32,6 +33,8 @@ class Spaceship(Object):
         self.sprite = self.pygame_engine.scale_sprite(self.sprite, self.size[0], self.size[1])
         self.direction_movimentation = DirectionMovimentationEnum.UP_SIDE.value
         self.hitbox = Hitbox(self, Vector(1, 1), Vector(0, 0))
+        self.pygame_engine.mixer_init()
+        self.sounds = self.pygame_engine.mixer_sound(SoundsConstants.SPACESHIP_SHOOT)
 
         
     def change_speed(self, event: pygame.event.EventType) -> None:

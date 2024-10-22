@@ -103,3 +103,19 @@ class PygameEngine(Engine):
     
     def wait(self, value: int) -> None:
         return pygame.time.wait(value)
+    
+    
+    def mixer_init(self) -> None:
+        return pygame.mixer.init()
+    
+    
+    def mixer_music_load(self, path_music: str) -> None:
+        return pygame.mixer.music.load(path_music)
+    
+    
+    def mixer_music_play(self, repeat_time: int) -> None:
+        return pygame.mixer.music.play(repeat_time)
+    
+    
+    def mixer_sound(self, path_sound: str) -> None:
+        return pygame.mixer.Sound(path_sound)
