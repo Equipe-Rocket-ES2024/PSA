@@ -75,6 +75,10 @@ class Engine(ABC):
     
     
     @abstractmethod
+    def get_font(self, value: int) -> any:
+        pass
+    
+    @abstractmethod
     def get_ticks(self) -> int:
         pass
     
@@ -86,4 +90,9 @@ class Engine(ABC):
     
     @abstractmethod
     def get_events(self) -> List[Event]:
+        pass
+    
+    
+    @abstractmethod
+    def wait(self, value: int) -> None:
         pass

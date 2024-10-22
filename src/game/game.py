@@ -35,7 +35,7 @@ class Game:
         self.time_since_last_spawn = 0
         self.score = 0
         self.pygame_engine.font_init()
-        self.font = pygame.font.Font(None, 36)
+        self.font = self.pygame_engine.get_font(value=36)
         self.lives = 3
         self.heart_sprite = self.pygame_engine.load_sprite_image(ScenarioConstants.HEART_01)
         self.heart_sprite = self.pygame_engine.scale_sprite(self.heart_sprite, 40, 30)
@@ -224,15 +224,15 @@ class Game:
             background.draw()
 
 
-    def menu_inicial(self):
-        font_button = pygame.font.Font(None, 60)
-        font_title = pygame.font.Font(None, 100)
+    def initial_menu(self):
+        font_button = self.pygame_engine.get_font(value=60)
+        font_title = self.pygame_engine.get_font(value=100)
         
         start_text = font_button.render("Start", True, (255, 255, 255))
         exit_text = font_button.render("Exit", True, (255, 255, 255))
         
-        start_button_rect = pygame.Rect((self.screen.get_width() // 2 - 100, 300, 200, 80))
-        exit_button_rect = pygame.Rect((self.screen.get_width() // 2 - 100, 450, 200, 80))
+        start_button_rect = self.pygame_engine.create_rect(self.screen.get_width() // 2 - 100, 300, 200, 80)
+        exit_button_rect = self.pygame_engine.create_rect(self.screen.get_width() // 2 - 100, 450, 200, 80)
         
         game_title_text = font_title.render("Star Wars X Star Treek", True, (255, 255, 0))
         title_rect = game_title_text.get_rect(center=(self.screen.get_width() // 2, 100))
@@ -240,11 +240,23 @@ class Game:
         menu_running = True
         while menu_running:
             self.screen.fill((0, 0, 0))
-
             self.screen.blit(game_title_text, title_rect)
 
-            pygame.draw.rect(self.screen, (0, 0, 255), start_button_rect)
-            pygame.draw.rect(self.screen, (255, 0, 0), exit_button_rect)
+            self.pygame_engine.draw_rect(
+                self.screen, 
+                (0, 0, 255), 
+                Vector(start_button_rect.x, start_button_rect.y),  
+                (start_button_rect.width, start_button_rect.height), 
+                1
+            )
+
+            self.pygame_engine.draw_rect(
+                self.screen, 
+                (255, 0, 0), 
+                Vector(exit_button_rect.x, exit_button_rect.y), 
+                (exit_button_rect.width, exit_button_rect.height),  
+                1
+            )
 
             self.screen.blit(start_text, (start_button_rect.x + 50, start_button_rect.y + 20))
             self.screen.blit(exit_text, (exit_button_rect.x + 65, exit_button_rect.y + 20))
@@ -271,16 +283,16 @@ class Game:
 
 
     def display_game_over(self):
-        font = pygame.font.Font(None, 74)
+        font = self.pygame_engine.get_font(value=74)
         game_over_text = font.render("GAME OVER", True, (255, 0, 0))
         restart_text = font.render("Returning to Menu...", True, (255, 255, 255))
 
-        self.screen.fill((0, 0, 0))  # Limpa a tela
+        self.screen.fill((0, 0, 0))
         self.screen.blit(game_over_text, (self.screen.get_width() // 2 - game_over_text.get_width() // 2, 200))
         self.screen.blit(restart_text, (self.screen.get_width() // 2 - restart_text.get_width() // 2, 300))
 
-        pygame.display.flip()
-        pygame.time.wait(2000)  # Espera 2 segundos antes de voltar ao menu
+        self.pygame_engine.display_flip()
+        self.pygame_engine.wait(2000)
         self.reset_game()
-        if self.menu_inicial():
+        if self.initial_menu():
             self.run_game()

@@ -1,7 +1,7 @@
 from typing import List, Tuple
 from src.library.engine.engine import Engine
 import pygame
-from pygame import Color, Surface
+from pygame import Color, Rect, Surface
 from src.library.vector.vector import Vector
 from pygame.event import Event
 
@@ -40,6 +40,10 @@ class PygameEngine(Engine):
         return pygame.font.init()
     
     
+    def get_font(self, value: int) -> any:
+        return pygame.font.Font(None, value)
+    
+    
     def get_ticks(self) -> int:
         return pygame.time.get_ticks()
     
@@ -66,12 +70,19 @@ class PygameEngine(Engine):
         position: Vector, 
         size: Tuple[int, int], 
         pixel_to_meters: int
-    ):
+    ) -> Rect:
+        x = 0
+        y = 1
         return pygame.draw.rect(
-            screen, (color),
-            (position.x * pixel_to_meters, position.y * pixel_to_meters,
-                size * pixel_to_meters, size * pixel_to_meters)
+        screen, 
+        color, 
+        (
+            position.x * pixel_to_meters, 
+            position.y * pixel_to_meters,
+            size[x] * pixel_to_meters,
+            size[y] * pixel_to_meters
         )
+    )
 
 
     def load_sprite_image(self, path_image: str) -> Surface:
@@ -88,3 +99,7 @@ class PygameEngine(Engine):
     
     def get_events(self) -> List[Event]:
         return pygame.event.get()
+
+    
+    def wait(self, value: int) -> None:
+        return pygame.time.wait(value)
