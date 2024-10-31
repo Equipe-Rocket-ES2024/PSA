@@ -91,12 +91,8 @@ class Game:
                     if event.type == pygame.KEYDOWN and event.key == Keys.K_SPACE.value:
                         self.spaceship.sounds.play()
                         self.add_objects(self.spaceship.shoot())
-                        
-                elif event.type == Keys.KEYDOWN.value:
-                    if event.key == Keys.K_ESCAPE.value:
-                        self.running = False
-                        self.pygame_engine.display_quit()
-
+                    elif event.key == Keys.K_ESCAPE.value:
+                        self.return_menu()
                              
             self.delta_time = (self.clock.tick(60) / 1000)
             
@@ -318,6 +314,12 @@ class Game:
         self.running = True
 
 
+    def return_menu(self):
+        self.reset_game()
+        if self.initial_menu():
+            self.run_game()
+            
+
     def display_game_over(self):
         font = self.pygame_engine.get_font(value=74)
         game_over_text = font.render("GAME OVER", True, (255, 0, 0))
@@ -329,6 +331,4 @@ class Game:
 
         self.pygame_engine.display_flip()
         self.pygame_engine.wait(2000)
-        self.reset_game()
-        if self.initial_menu():
-            self.run_game()
+        self.return_menu()
