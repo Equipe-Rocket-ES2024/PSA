@@ -119,7 +119,7 @@ class Game:
             )
 
             if isinstance(obj, Enemy):
-                obj.change_speed(self.delta_time)
+                obj.change_move_timer(self.delta_time)
                 bullet = obj.update(delta_time)
                 if bullet:
                     self.add_objects(bullet)
@@ -193,6 +193,7 @@ class Game:
             self.score += 1
             self.explosion_sound.play()  
     
+    
     def handle_enemy_spaceship_collision(self, obj1, obj2, objects_remove):
         if isinstance(obj1, Spaceship) and isinstance(obj2, Enemy):
             obj1.explosion(SpaceshipConstants.SPACESHIP_EXPLOSION)
@@ -230,6 +231,8 @@ class Game:
     def spawn_enemy(self):
         new_enemy = Enemy(self.screen)
         self.add_objects(new_enemy)
+        bullet = new_enemy.shoot()
+        self.add_objects(bullet)
         
     
     def schedule_enemy_removal(self, enemy):

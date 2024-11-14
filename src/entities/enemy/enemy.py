@@ -40,7 +40,7 @@ class Enemy(Object):
         self.sprite_manager.update_sprite(self.direction_movimentation)
 
 
-    def change_speed(self, delta_time: float) -> None:
+    def change_move_timer(self, delta_time: float) -> None:
         self._move_timer += delta_time
 
         if self._move_timer >= self._move_interval:
@@ -49,27 +49,39 @@ class Enemy(Object):
 
 
     def _choose_new_direction(self) -> None:
-        self._speed.x = uniform(
-            -self._enemy_speed_default,
-            self._enemy_speed_default
-        )
-        self._speed.y = uniform(
-            -self._enemy_speed_default,
-            self._enemy_speed_default
-        )
+        random_direction = randint(0, 3)
+        
+        print(random_direction)
+
+        if random_direction == DirectionMovimentationEnum.LEFT_SIDE.value:
+            self.direction_movimentation = DirectionMovimentationEnum.LEFT_SIDE.value
+        elif random_direction == DirectionMovimentationEnum.RIGHT_SIDE.value:
+            self.direction_movimentation = DirectionMovimentationEnum.RIGHT_SIDE.value
+        elif random_direction == DirectionMovimentationEnum.UP_SIDE.value:
+            self.direction_movimentation = DirectionMovimentationEnum.UP_SIDE.value
+        else:
+            self.direction_movimentation = DirectionMovimentationEnum.DOWN_SIDE.value
+        
+        self.change_speed()
         self.update_sprite()
+        
+        
+    def change_speed(self) -> None: 
+               
+        if self.direction_movimentation == DirectionMovimentationEnum.LEFT_SIDE.value:
+            self._speed.x = -self.spaceship_scalar_speed
+        elif self.direction_movimentation == DirectionMovimentationEnum.RIGHT_SIDE.value:
+            self._speed.x = self.spaceship_scalar_speed
+        elif self.direction_movimentation == DirectionMovimentationEnum.UP_SIDE.value:
+            self._speed.y = -self.spaceship_scalar_speed
+        else:
+            self._speed.y = self.spaceship_scalar_speed
+
+        self.sprite_manager.update_sprite(self.direction_movimentation)
+        self.sprite = self.sprite_manager.current_sprite
 
 
     def update_sprite(self) -> None:
-        if self.direction_movimentation == DirectionMovimentationEnum.RIGHT_SIDE.value:
-            self.sprite = self.sprites[0]  
-        elif self.direction_movimentation == DirectionMovimentationEnum.LEFT_SIDE.value:
-            self.sprite = self.sprites[1]  # esquerda
-        elif self.direction_movimentation == DirectionMovimentationEnum.DOWN_SIDE.value:
-            self.sprite = self.sprites[2]  # baixo
-        elif self.direction_movimentation == DirectionMovimentationEnum.UP_SIDE.value:
-            self.sprite = self.sprites[3]  # cima
-
         self.sprite_manager.update_sprite(self.direction_movimentation)
         self.sprite = self.sprite_manager.current_sprite
 
