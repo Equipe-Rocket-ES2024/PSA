@@ -1,3 +1,5 @@
+from time import sleep
+import pickle
 import pygame
 from src.entities.enemy.enemy import Enemy
 from src.entities.bullet.bullet import Bullet
@@ -18,6 +20,7 @@ from src.library.vector.vector import Vector
 
 
 class Game:
+    SAVE_FILE = "game_state.pkl"
 
     def __init__(self):
         self.pygame_engine = PygameEngine()
@@ -54,17 +57,14 @@ class Game:
             ScenarioConstants.HEART_12,
             ScenarioConstants.HEART_13
         ]
-
         self.heart_sprites = [
             self.pygame_engine.scale_sprite(
                 self.pygame_engine.load_sprite_image(path), 40, 30)
             for path in heart_sprite_paths
         ]
-
         self.current_heart_frame = 0
         self.animation_speed = 0.1
         self.time_since_last_frame = 0
-
         self.enemies_pending_removal = []
         self.background_game_list = [
             Background(
@@ -76,7 +76,11 @@ class Game:
         self.pygame_engine.mixer_init()
         self.pygame_engine.mixer_music_load(SoundsConstants.BACKGROUND_MUSIC)
         self.explosion_sound = self.pygame_engine.mixer_sound(
-            SoundsConstants.EXPLOSION)
+            SoundsConstants.DIE_FUCK)
+        self.die_fuck = self.pygame_engine.mixer_sound(
+            SoundsConstants.DIE_FUCK)
+        self.what_a_pity = self.pygame_engine.mixer_sound(
+            SoundsConstants.WHAT_A_PITY)
         self.pygame_engine.mixer_music_play(-1)
 
     def run_game(self):
@@ -86,24 +90,19 @@ class Game:
                     self.running = False
                     self.pygame_engine.display_quit()
                     break
-
                 elif event.type in [pygame.KEYDOWN, pygame.KEYUP]:
                     self.spaceship.change_speed(event)
                     if event.type == pygame.KEYDOWN and event.key == Keys.K_SPACE.value:
                         self.spaceship.sounds.play()
                         self.add_objects(self.spaceship.shoot())
                     elif event.key == Keys.K_ESCAPE.value:
-                        if not self.pause_menu():  # Chama o menu de pausa
+                        if not self.pause_menu():
                             return
-
             self.delta_time = (self.clock.tick(60) / 1000)
-
             self.physics_process(self.delta_time)
             self.update_enemy_removals()
             self.remove_out_of_bounds_bullets()
-
             self.render()
-
         self.display_game_over()
         self.pygame_engine.display_init()
 
@@ -117,15 +116,12 @@ class Game:
                 self.screen.get_width(),
                 self.screen.get_height()
             )
-
             if isinstance(obj, Enemy):
                 obj.change_speed(self.delta_time)
                 bullet = obj.update(delta_time)
                 if bullet:
                     self.add_objects(bullet)
-
             self.handle_collision()
-
         self.time_since_last_spawn += delta_time
         if self.time_since_last_spawn >= self.enemy_spawn_interval:
             self.spawn_enemy()
@@ -134,32 +130,26 @@ class Game:
     def render(self):
         self.screen.fill(self.game_config_constants.GAME_BACKGROUND_COLOR)
         self.paralax()
-
         for object in self.objects:
             object.draw_object(self.screen)
-
         score_text = self.font.render(
             f"{self.game_config_constants.SCORE_LABEL}: {self.score}",
             True,
             (255, 255, 255)
         )
         self.screen.blit(score_text, (10, 10))
-
         self.draw_hearts()
-
         self.pygame_engine.display_flip()
 
     def draw_hearts(self) -> None:
         heart_spacing = 40
         position_x = 10
         position_y = 50
-
         self.time_since_last_frame += self.delta_time
         if self.time_since_last_frame >= self.animation_speed:
             self.current_heart_frame = (
                 self.current_heart_frame + 1) % len(self.heart_sprites)
             self.time_since_last_frame = 0
-
         for i in range(self.lives):
             x_position = position_x + i * heart_spacing
             self.screen.blit(
@@ -167,13 +157,11 @@ class Game:
 
     def handle_collision(self):
         objects_remove = set()
-
         for obj1, obj2 in itertools.combinations(self.objects, 2):
             if Hitbox.check_collision(obj1.hitbox, obj2.hitbox):
                 self.handle_enemy_bullet_collision(obj1, obj2, objects_remove)
                 self.handle_enemy_spaceship_collision(
                     obj1, obj2, objects_remove)
-
         self.remove_objects(objects_remove)
 
     def handle_enemy_bullet_collision(self, obj1, obj2, objects_remove):
@@ -183,6 +171,7 @@ class Game:
             obj1.stop_movement()
             self.score += 1
             self.explosion_sound.play()
+            self.die_fuck.play()
             objects_remove.add(obj2)
         elif isinstance(obj1, Bullet) and isinstance(obj2, Enemy):
             self.schedule_enemy_removal(obj1)
@@ -191,12 +180,14 @@ class Game:
             objects_remove.add(obj1)
             self.score += 1
             self.explosion_sound.play()
+            self.die_fuck.play()
 
     def handle_enemy_spaceship_collision(self, obj1, obj2, objects_remove):
         if isinstance(obj1, Spaceship) and isinstance(obj2, Enemy):
             obj1.explosion(SpaceshipConstants.SPACESHIP_EXPLOSION)
             self.lives -= 1
             self.explosion_sound.play()
+            self.die_fuck.play()
             objects_remove.add(obj2)
             if self.lives <= 0:
                 self.running = False
@@ -204,6 +195,7 @@ class Game:
             obj2.explosion(SpaceshipConstants.SPACESHIP_EXPLOSION)
             self.lives -= 1
             self.explosion_sound.play()
+            self.die_fuck.play()
             objects_remove.add(obj1)
             if self.lives <= 0:
                 self.running = False
@@ -214,7 +206,6 @@ class Game:
 
     def remove_out_of_bounds_bullets(self):
         objects_to_remove = []
-
         for obj in self.objects:
             if isinstance(obj, Bullet):
                 max_x = (self.setup.screen_width / obj.meters_to_pixel) - \
@@ -223,7 +214,6 @@ class Game:
                     (obj.size[1] / obj.meters_to_pixel)
                 if obj.position.y <= 0 or obj.position.x <= 0 or obj.position.y >= max_x or obj.position.x >= max_y:
                     objects_to_remove.append(obj)
-
         self.objects = list(
             filter(lambda x: x not in objects_to_remove, self.objects))
 
@@ -240,7 +230,6 @@ class Game:
         enemies_to_remove = [
             enemy for enemy, removal_time in self.enemies_pending_removal if current_time >= removal_time
         ]
-
         self.objects = [
             obj for obj in self.objects if obj not in enemies_to_remove]
         self.enemies_pending_removal = [
@@ -258,12 +247,16 @@ class Game:
         font_title = self.pygame_engine.get_font(value=100)
 
         start_text = font_button.render("Start", True, (255, 255, 255))
+        continue_text = font_button.render(
+            "Continue", True, (255, 255, 255)) if self.load_game_state() else None
         exit_text = font_button.render("Exit", True, (255, 255, 255))
 
         start_button_rect = self.pygame_engine.create_rect(
             self.screen.get_width() // 2 - 100, 300, 200, 80)
+        continue_button_rect = self.pygame_engine.create_rect(
+            self.screen.get_width() // 2 - 100, 400, 200, 80) if continue_text else None
         exit_button_rect = self.pygame_engine.create_rect(
-            self.screen.get_width() // 2 - 100, 450, 200, 80)
+            self.screen.get_width() // 2 - 100, 500, 200, 80)
 
         game_title_text = font_title.render(
             "Star Wars X Star Treek", True, (255, 255, 0))
@@ -283,6 +276,15 @@ class Game:
                 1
             )
 
+            if continue_text:
+                self.pygame_engine.draw_rect(
+                    self.screen,
+                    (0, 255, 0),
+                    Vector(continue_button_rect.x, continue_button_rect.y),
+                    (continue_button_rect.width, continue_button_rect.height),
+                    1
+                )
+
             self.pygame_engine.draw_rect(
                 self.screen,
                 (255, 0, 0),
@@ -293,17 +295,26 @@ class Game:
 
             self.screen.blit(
                 start_text, (start_button_rect.x + 50, start_button_rect.y + 20))
+            if continue_text:
+                self.screen.blit(
+                    continue_text, (continue_button_rect.x + 20, continue_button_rect.y + 20))
             self.screen.blit(
                 exit_text, (exit_button_rect.x + 65, exit_button_rect.y + 20))
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
+                    self.what_a_pity.play()
+                    sleep(3)
                     return False
-
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if start_button_rect.collidepoint(event.pos):
                         return True
+                    elif continue_button_rect and continue_button_rect.collidepoint(event.pos):
+                        self.load_game_state()
+                        return True
                     elif exit_button_rect.collidepoint(event.pos):
+                        self.what_a_pity.play()
+                        sleep(3)
                         return False
 
             self.pygame_engine.display_flip()
@@ -365,7 +376,6 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return False
-
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if save_button_rect.collidepoint(event.pos):
                         self.save_game_state()
@@ -379,6 +389,27 @@ class Game:
         game_state = {
             "score": self.score,
             "lives": self.lives,
-            "objects": self.objects,
+            "objects": [(obj.__class__.__name__, obj.position) for obj in self.objects if isinstance(obj, (Enemy, Bullet, Spaceship))],
         }
-        print("Jogo salvo:", game_state)
+        with open(self.SAVE_FILE, "wb") as f:
+            pickle.dump(game_state, f)
+
+    def load_game_state(self):
+        try:
+            with open(self.SAVE_FILE, "rb") as f:
+                game_state = pickle.load(f)
+                self.score = game_state["score"]
+                self.lives = game_state["lives"]
+                self.objects = []
+                for obj_name, position in game_state["objects"]:
+                    if obj_name == "Enemy":
+                        obj = Enemy(self.screen)
+                    elif obj_name == "Bullet":
+                        obj = Bullet(self.screen)
+                    elif obj_name == "Spaceship":
+                        obj = Spaceship(self.screen)
+                    obj.position = position
+                    self.add_objects(obj)
+            return True
+        except (FileNotFoundError, EOFError):
+            return False
