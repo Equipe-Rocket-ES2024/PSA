@@ -8,6 +8,7 @@ from src.library.vector.vector import Vector
 from src.entities.bullet.bullet import Bullet
 from src.library.constants.game_config_constants import GameConfigConstants
 from src.library.constants.enemy_constants import EnemyConstants
+from src.library.enums.direction_movimentation_enum import DirectionMovimentationEnum
 
 
 class Enemy(Object):
@@ -34,6 +35,9 @@ class Enemy(Object):
         self.hitbox = Hitbox(self, Vector(1, 1), Vector(0, 0))
         self.shoot_interval = 1.5
         self.time_since_last_shot = 0
+        self.spaceship_scalar_speed = 10
+        self.direction_movimentation = DirectionMovimentationEnum.UP_SIDE.value
+        self.sprite_manager.update_sprite(self.direction_movimentation)
 
 
     def change_speed(self, delta_time: float) -> None:
@@ -57,31 +61,17 @@ class Enemy(Object):
 
 
     def update_sprite(self) -> None:
-        if self._speed.x > 0 and self._speed.y == 0:
-            self.sprite = self.sprites[0]  # direita
-        elif self._speed.x < 0 and self._speed.y == 0:
+        if self.direction_movimentation == DirectionMovimentationEnum.RIGHT_SIDE.value:
+            self.sprite = self.sprites[0]  
+        elif self.direction_movimentation == DirectionMovimentationEnum.LEFT_SIDE.value:
             self.sprite = self.sprites[1]  # esquerda
-        elif self._speed.y > 0 and self._speed.x == 0:
+        elif self.direction_movimentation == DirectionMovimentationEnum.DOWN_SIDE.value:
             self.sprite = self.sprites[2]  # baixo
-        elif self._speed.y < 0 and self._speed.x == 0:
+        elif self.direction_movimentation == DirectionMovimentationEnum.UP_SIDE.value:
             self.sprite = self.sprites[3]  # cima
-        elif self._speed.x > 0 and self._speed.y > 0:
-            # Movimento diagonal para baixo-direita
-            # Aqui você pode escolher um sprite que represente essa direção diagonal
-            self.sprite = self.sprites[2]  # Por exemplo, usando o sprite de movimento para baixo
-        elif self._speed.x > 0 and self._speed.y < 0:
-            # Movimento diagonal para cima-direita
-            self.sprite = self.sprites[0]  # Usando o sprite de movimento para a direita
-        elif self._speed.x < 0 and self._speed.y > 0:
-            # Movimento diagonal para baixo-esquerda
-            self.sprite = self.sprites[2]  # Usando o sprite de movimento para baixo
-        elif self._speed.x < 0 and self._speed.y < 0:
-            # Movimento diagonal para cima-esquerda
-            self.sprite = self.sprites[3]  # Usando o sprite de movimento para cima
 
-        self.sprite = self.pygame_engine.scale_sprite(
-            self.sprite, self.size[0], self.size[1]
-        )
+        self.sprite_manager.update_sprite(self.direction_movimentation)
+        self.sprite = self.sprite_manager.current_sprite
 
 
     def physics_process(self, delta_time: float, screen_width: int, screen_height: int) -> None:
@@ -98,8 +88,44 @@ class Enemy(Object):
 
 
     def shoot(self) -> Bullet:
-        position = Vector(self.position.x + 1, self.position.y + 3)
-        return Bullet(self.screen, position, 30)
+        adjustment_position_x = None
+        adjustment_position_y = None
+        if self.direction_movimentation == DirectionMovimentationEnum.UP_SIDE.value:
+            adjustment_position_x = self.position.x + 1
+            adjustment_position_y = self.position.y + 2
+        elif self.direction_movimentation == DirectionMovimentationEnum.LEFT_SIDE.value:
+            adjustment_position_x = self.position.x + 2
+            adjustment_position_y = self.position.y + 1
+        elif self.direction_movimentation == DirectionMovimentationEnum.RIGHT_SIDE.value:
+            adjustment_position_x = self.position.x
+            adjustment_position_y = self.position.y + 1
+        elif self.direction_movimentation == DirectionMovimentationEnum.DOWN_SIDE.value:
+            adjustment_position_x = self.position.x + 1
+            adjustment_position_y = self.position.y
+
+        position_shoot = Vector(adjustment_position_x, adjustment_position_y)
+        speed_shoot = Vector(0, 0)
+        scalar_speed = 30
+        delta = 3
+
+        if self.direction_movimentation == DirectionMovimentationEnum.RIGHT_SIDE.value:
+            position_shoot.x += delta
+            speed_shoot.x = scalar_speed
+            speed_shoot.y = 0
+        elif self.direction_movimentation == DirectionMovimentationEnum.LEFT_SIDE.value:
+            position_shoot.x -= delta
+            speed_shoot.x = -scalar_speed
+            speed_shoot.y = 0
+        elif self.direction_movimentation == DirectionMovimentationEnum.DOWN_SIDE.value:
+            position_shoot.y += delta
+            speed_shoot.x = 0
+            speed_shoot.y = scalar_speed
+        elif self.direction_movimentation == DirectionMovimentationEnum.UP_SIDE.value:
+            position_shoot.y -= delta
+            speed_shoot.x = 0
+            speed_shoot.y = -scalar_speed
+
+        return Bullet(self.screen, position_shoot, speed_shoot)
 
 
     def update(self, delta_time):
