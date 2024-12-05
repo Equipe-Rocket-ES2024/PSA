@@ -1,0 +1,13 @@
+Melhorias TCC Rachid.
+
+1 - (Melhoria Backend): Foi verificado, que ao realizar o registro de usuário, o CPF não estava sendo validado, sendo que essa já seria uma primeira melhoria...
+Realizado no commit: https://github.com/ifpr-paranavai/sistema_gerenciamento_servicos/commit/4097154ae3cec9ceded9e8967f7acbcf6998a50a
+
+2 - (Melhoria Frontend): Ao selecionar o contato da mensagem, adicionar um loading com skeleton, porque da maneira que está atualmente, ao clicar, mantém a conversa anterior, 
+até que o servidor retorne os dados, para então alterar as mensagens do chat. Apresentando um skeleton, o usuário vai saber que está aguardando "algo" para que apresente as mensagens.
+Realizado no commit: https://github.com/ifpr-paranavai/sistema_gerenciamento_servicos_ng/commit/74f83327d19b5f17df76bc9995bf4914b6ea605c
+
+3 - (Melhoria Frontend): Remover o medidor de complexidade de senha na tela de login. Isso porque ao clicar na senha, o componente apresenta em cima do botão de "Acessar", obrigando
+o usuário a clicar para fora da tela, para "desativar" esse componente. Também, não existe uma validação em relação a força da senha no backend.
+Realizado no commit: https://github.com/ifpr-paranavai/sistema_gerenciamento_servicos_ng/commit/cef42f272f2ffb7fa9a6cff665503011dd193df5
+
