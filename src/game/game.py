@@ -1,3 +1,4 @@
+import os
 from time import sleep
 import pickle
 import pygame
@@ -27,6 +28,7 @@ class Game:
         self.pygame_engine.display_init()
         self.setup = Setup()
         self.running = True
+        self.paused = False
         self.screen = self.setup.screen
         self.spaceship = Spaceship(self.screen)
         self.objects = [self.spaceship]
@@ -98,6 +100,10 @@ class Game:
                     elif event.key == Keys.K_ESCAPE.value:
                         if not self.pause_menu():
                             return
+                        
+            if self.paused:
+                return
+            
             self.delta_time = (self.clock.tick(60) / 1000)
             self.physics_process(self.delta_time)
             self.update_enemy_removals()
@@ -190,6 +196,7 @@ class Game:
             self.die_fuck.play()
             objects_remove.add(obj2)
             if self.lives <= 0:
+                self.delete_save()
                 self.running = False
         elif isinstance(obj1, Enemy) and isinstance(obj2, Spaceship):
             obj2.explosion(SpaceshipConstants.SPACESHIP_EXPLOSION)
@@ -198,6 +205,7 @@ class Game:
             self.die_fuck.play()
             objects_remove.add(obj1)
             if self.lives <= 0:
+                self.delete_save()
                 self.running = False
 
     def remove_objects(self, objects_remove):
@@ -248,7 +256,7 @@ class Game:
 
         start_text = font_button.render("Start", True, (255, 255, 255))
         continue_text = font_button.render(
-            "Continue", True, (255, 255, 255)) if self.load_game_state() else None
+            "Resume", True, (255, 255, 255)) if self.load_game_state() else None
         exit_text = font_button.render("Exit", True, (255, 255, 255))
 
         start_button_rect = self.pygame_engine.create_rect(
@@ -347,7 +355,8 @@ class Game:
         self.pygame_engine.wait(2000)
         self.return_menu()
 
-    def pause_menu(self):
+    def pause_menu(self) -> bool:
+        self.paused = True
         font_button = self.pygame_engine.get_font(value=60)
 
         save_text = font_button.render("Save", True, (255, 255, 255))
@@ -375,15 +384,18 @@ class Game:
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
+                    self.paused = False
                     return False
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if save_button_rect.collidepoint(event.pos):
                         self.save_game_state()
+                        self.paused = False
                         return True
                     elif continue_button_rect.collidepoint(event.pos):
+                        self.paused = False
                         return True
 
-            pygame.display.flip()
+            self.pygame_engine.display_flip()
 
     def save_game_state(self):
         game_state = {
@@ -402,14 +414,22 @@ class Game:
                 self.lives = game_state["lives"]
                 self.objects = []
                 for obj_name, position in game_state["objects"]:
+                    obj = None
                     if obj_name == "Enemy":
                         obj = Enemy(self.screen)
+                        obj.position = position
                     elif obj_name == "Bullet":
                         obj = Bullet(self.screen)
+                        obj.position = position
                     elif obj_name == "Spaceship":
-                        obj = Spaceship(self.screen)
-                    obj.position = position
-                    self.add_objects(obj)
-            return True
+                        self.spaceship = Spaceship(self.screen)
+                        self.spaceship.position = position
+                    self.add_objects(obj) if obj else self.add_objects(self.spaceship) 
+                return True
         except (FileNotFoundError, EOFError):
+            self.__init__()
             return False
+        
+    def delete_save(self) -> None:
+        if os.path.exists(self.SAVE_FILE):
+            os.remove(self.SAVE_FILE)
